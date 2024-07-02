@@ -1,4 +1,4 @@
-from models.player import PlayerManager
+from models.player_model import PlayerManager
 from views.main_menu_view import MainMenuView
 from views.player_view import PlayerView
 
