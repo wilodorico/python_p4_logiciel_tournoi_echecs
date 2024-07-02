@@ -1,7 +1,8 @@
 import datetime
 from typing import List
 
-from models.player import Player
+from models.player_model import Player
+from models.round_model import Round
 
 
 class Tournament:
@@ -20,6 +21,6 @@ class Tournament:
         self.date_end = date_end
 
         self.number_of_round: int = 4
-        self.number_of_current_round = 1
-        self.rounds = []
+        self.number_of_current_round: int = 1
+        self.rounds: List[Round] = []
         self.players: List[Player] = []
