@@ -9,6 +9,7 @@ class MainMenuView:
         print("3. Quitter")
         print()
 
+    def request_user_choice(self) -> int:
         while True:
             choice = input("Veuillez entrer un choix (1, 2 ou 3) ")
             print()

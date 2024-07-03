@@ -12,13 +12,13 @@ class MainMenuController:
 
     def run(self):
         while True:
-            choice: int = self.main_menu_view.display_main_menu()
+            self.main_menu_view.display_main_menu()
+            choice: int = self.main_menu_view.request_user_choice()
 
             if choice == 1:
                 self.player_controller.run()
-            elif choice == 2:
+            if choice == 2:
                 self.tournament_controller.create_tournament()
-                break
-            elif choice == 3:
+            if choice == 3:
                 print("Merci d'avoir utilisé le programme.")
                 break
