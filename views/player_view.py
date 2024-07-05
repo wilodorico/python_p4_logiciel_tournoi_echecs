@@ -9,6 +9,7 @@ class PlayerView:
         print("3. Retour au menu principal")
         print()
 
+    def request_user_choice(self):
         choice: str = input("Choisissez une option (1, 2 ou 3) : ")
         print()
 
@@ -20,7 +21,7 @@ class PlayerView:
             print()
             return self.display_player_menu()
 
-    def get_player_info(self):
+    def request_player_info(self):
         firstname = input("Entrez son prénom : ")
         lastname = input("Entrez son nom : ")
         date_of_birth = input("Entrez sa date de naissance : ")

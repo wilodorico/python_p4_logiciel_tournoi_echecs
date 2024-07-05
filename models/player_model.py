@@ -1,5 +1,6 @@
 import datetime
 from typing import List
+from tinydb import TinyDB
 
 
 class Player:
@@ -37,8 +38,9 @@ class Player:
 
 class PlayerManager:
 
-    def __init__(self):
-        self.players: List[Player] = []
+    def __init__(self, db_path="data/players/players.json"):
+        self.db = TinyDB(db_path, indent=4)
+        self.players_table = self.db.table("players")
 
     def add_player(
         self,
@@ -48,9 +50,19 @@ class PlayerManager:
         point: float,
         national_id: str,
     ):
-        player: Player = Player(firstname, lastname, date_of_birth, point, national_id)
-        self.players.append(player)
-        print(self.players)
+        new_player: Player = Player(
+            firstname, lastname, date_of_birth, point, national_id
+        )
+        self.players_table.insert(
+            {
+                "firstname": new_player.firstname,
+                "lastname": new_player.lastname,
+                "date_of_birth": new_player.date_of_birth,
+                "point": new_player.point,
+                "national_id": new_player.national_id,
+            }
+        )
+        return new_player
 
     def modify_player(self):
         print("Joueur modifier !")
