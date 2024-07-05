@@ -1,6 +1,6 @@
 import datetime
 from typing import List
-from tinydb import TinyDB
+from tinydb import TinyDB, where
 
 
 class Player:
@@ -53,6 +53,18 @@ class PlayerManager:
         new_player: Player = Player(
             firstname, lastname, date_of_birth, point, national_id
         )
+
+        player_exist = self.players_table.search(
+            (where("lastname") == new_player.lastname)
+            & (where("firstname") == new_player.firstname)
+        )
+
+        if player_exist:
+            return (
+                False,
+                f"Le joueur {new_player.firstname} {new_player.lastname} existe déjà !",
+            )
+
         self.players_table.insert(
             {
                 "firstname": new_player.firstname,
@@ -62,7 +74,7 @@ class PlayerManager:
                 "national_id": new_player.national_id,
             }
         )
-        return new_player
+        return True, f"Joueur {new_player.firstname} enregistré avec succès !"
 
     def modify_player(self):
         print("Joueur modifier !")
