@@ -11,7 +11,7 @@ class MainMenuView:
 
     def request_user_choice(self) -> int:
         while True:
-            choice = input("Veuillez entrer un choix (1, 2 ou 3) ")
+            choice = input("Veuillez entrer un choix (1, 2 ou 3): ")
             print()
             try:
                 choice_number: int = int(choice)

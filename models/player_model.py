@@ -57,19 +57,20 @@ class PlayerManager:
         player_exist = self.players_table.search(
             (where("lastname") == new_player.lastname)
             & (where("firstname") == new_player.firstname)
+            & (where("date_of_birth") == str(new_player.date_of_birth))
         )
 
         if player_exist:
             return (
                 False,
-                f"Le joueur {new_player.firstname} {new_player.lastname} existe déjà !",
+                f"Le joueur {new_player.firstname} {new_player.lastname} existe déjà! Veuillez saisir un autre joueur",
             )
 
         self.players_table.insert(
             {
                 "firstname": new_player.firstname,
                 "lastname": new_player.lastname,
-                "date_of_birth": new_player.date_of_birth,
+                "date_of_birth": str(new_player.date_of_birth),
                 "point": new_player.point,
                 "national_id": new_player.national_id,
             }
