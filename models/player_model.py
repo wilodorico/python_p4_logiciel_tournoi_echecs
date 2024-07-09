@@ -62,7 +62,6 @@ class PlayerManager:
 
         if player_exist:
             return (
-                False,
                 f"Le joueur {new_player.firstname} {new_player.lastname} existe déjà! Veuillez saisir un autre joueur",
             )
 
@@ -75,7 +74,7 @@ class PlayerManager:
                 "national_id": new_player.national_id,
             }
         )
-        return True, f"Joueur {new_player.firstname} enregistré avec succès !"
+        return f"Joueur {new_player.firstname} enregistré avec succès !"
 
     def modify_player(self):
         print("Joueur modifier !")

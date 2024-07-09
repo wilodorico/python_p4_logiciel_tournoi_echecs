@@ -23,16 +23,14 @@ class PlayerController:
                 break
 
     def add_player(self):
-        while True:
-            firstname, lastname, date_of_birth, point, national_id = (
-                self.player_view.request_player_info()
-            )
-            success, message = self.player_manager.add_player(
-                firstname, lastname, date_of_birth, point, national_id
-            )
-            print(message)
-            if success:
-                break
+        firstname, lastname, date_of_birth, point, national_id = (
+            self.player_view.request_player_info()
+        )
+        message = self.player_manager.add_player(
+            firstname, lastname, date_of_birth, point, national_id
+        )
+        print()
+        print(message)
 
     def modify_player(self):
         self.player_manager.modify_player()
