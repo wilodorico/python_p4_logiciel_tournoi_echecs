@@ -16,10 +16,12 @@ class PlayerController:
             choice: int = self.player_view.request_user_choice()
 
             if choice == 1:
-                self.add_player()
+                self.show_players()
             if choice == 2:
-                self.modify_player()
+                self.add_player()
             if choice == 3:
+                self.modify_player()
+            if choice == 4:
                 break
 
     def add_player(self):
@@ -33,4 +35,17 @@ class PlayerController:
         print(message)
 
     def modify_player(self):
-        self.player_manager.modify_player()
+        self.show_players()
+        player_id: int = self.player_view.request_id_player()
+        player = self.player_manager.get_player_by_id(player_id)
+        if player:
+            firstname, lastname, date_of_birth, point, national_id = (
+                self.player_view.request_update_player_info(player)
+            )
+            self.player_manager.update_player(
+                player_id, firstname, lastname, date_of_birth, point, national_id
+            )
+
+    def show_players(self):
+        players = self.player_manager.list_players()
+        self.player_view.show_players(players)
