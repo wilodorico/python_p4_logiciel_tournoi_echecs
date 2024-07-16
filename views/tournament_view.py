@@ -21,18 +21,17 @@ class TournamentView:
     def display_tournament_menu(self):
         print()
         print("1. Ajouter les joueurs")
-        print("2. Créer le Tour")
 
         while True:
-            choice = input("Veuillez entrer un choix (1 ou 2) ")
+            choice = input("Veuillez entrer un choix (1) ")
             print()
             try:
                 choice_number: int = int(choice)
-                if choice_number in [1, 2]:
+                if choice_number in [1]:
                     return choice_number
                 else:
-                    print("Choix invalide : Veuillez entrer 1 ou 2")
+                    print("Choix invalide : Veuillez entrer 1")
                     print()
             except ValueError:
-                print("Erreur : Veuillez entrer un nombre (1 ou 2)")
+                print("Erreur : Veuillez entrer un nombre (1)")
                 print()

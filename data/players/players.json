@@ -1,1 +1,25 @@
-{}
+{
+    "players": {
+        "1": {
+            "firstname": "wilfried",
+            "lastname": "smith",
+            "date_of_birth": "12-12-1992",
+            "point": 0.0,
+            "national_id": "AB12345"
+        },
+        "2": {
+            "firstname": "jack",
+            "lastname": "smith",
+            "date_of_birth": "15-05-1985",
+            "point": 0.0,
+            "national_id": "AB12345"
+        },
+        "3": {
+            "firstname": "joe",
+            "lastname": "smith",
+            "date_of_birth": "14-05-1994",
+            "point": 0.0,
+            "national_id": "AV12345"
+        }
+    }
+}

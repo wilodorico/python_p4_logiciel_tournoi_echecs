@@ -14,15 +14,24 @@
 
 
 # Ajouter les players au tournoi
+
+# list_joueurs = Récupérer la liste des joueurs enregistrés en BDD
+
+
 # Tournament.add_player(player_id=1)
 # Tournament.add_player(player_id=2)
 # Tournament.add_player(player_id=3)
 # Tournament.add_player(player_id=4)
 
 
-# Créer Round
+# lancer le tournoi
+# Créer Rounds
 #
 # Tournament.create_round()  -> id de round 1
+
+# Generer la liste des matchs aleatoirement pour le 1er Round
+# un match = [(nom_joueur1, score), (nom_joueur2, score)]
+
 
 # attente de resultats
 
@@ -35,7 +44,7 @@ class TournamentController:
     def __init__(self):
         self.tournament_view = TournamentView()
 
-    def create_tournament(self):
+    def handle_tournament(self):
         name, location, description, date_start, date_end = (
             self.tournament_view.get_tournament_info()
         )
