@@ -13,11 +13,10 @@ class TournamentController:
             self.tournament_view.display_tournament_menu()
             choice: int = self.tournament_view.request_user_choice()
 
-            # remplacer par le match case
+            # remplace par le match case
 
             if choice == 1:
-                # self.show_tournaments()
-                pass
+                self.show_tournaments()
             if choice == 2:
                 self.create_tournament()
             if choice == 3:
@@ -36,3 +35,7 @@ class TournamentController:
         self.tournament_manager.create_tournament(
             name, location, description, date_start, date_end
         )
+
+    def show_tournaments(self):
+        tournaments = self.tournament_manager.get_tournaments()
+        self.tournament_view.display_tournaments(tournaments)

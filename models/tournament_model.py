@@ -68,3 +68,17 @@ class TournamentManager:
         self.tournaments_table.insert(new_tournament.to_dict())
 
         print("Tournoi enregistré avec succès !")
+
+    def get_tournaments(self):
+        tournament_data = self.tournaments_table.all()
+        tournaments = []
+        for tournament in tournament_data:
+            tournaments.append(
+                {
+                    "id": tournament.doc_id,
+                    "name": tournament["name"],
+                    "date_start": tournament["date_start"],
+                }
+            )
+
+        return tournaments
