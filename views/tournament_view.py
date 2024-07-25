@@ -25,8 +25,8 @@ class TournamentView:
         print()
         print("1. Liste des tournois")
         print("2. Créer un tournoi")
-        print("3. Ajouter les joueurs au tournoi")
-        print("4. Créer un tour")
+        print("3. Gérer le dernier tournoi créé")
+        print("4. Gérer un tournoi")
         print("5. Retour au menu principal")
 
     def request_user_choice(self):
@@ -50,9 +50,37 @@ class TournamentView:
         print(
             "-------------------------------------------------------------------------------"
         )
-        for tournament in tournaments:
-            print(tournament)
-
+        if tournaments:
+            for tournament in tournaments:
+                print(f"ID : {tournament.doc_id} - {tournament}")
+        else:
+            print("Aucun tournoi enregistré.")
         print(
             "-------------------------------------------------------------------------------"
         )
+
+    def display_tournament_management_menu(self):
+        print()
+        print("1. Ajouter les joueurs")
+        print("2. Liste des joueurs enregistrés")
+        print("3. Gérer les tours")
+        print("4. Retour au menu principal")
+
+    def request_tournament_management_choice(self):
+        while True:
+            print()
+            choice = input("Veuillez entrer un choix (1, 2, 3 ou 4) ")
+            print()
+            try:
+                choice_number: int = int(choice)
+                if choice_number in [1, 2, 3, 4]:
+                    return choice_number
+                else:
+                    print("Choix invalide : Veuillez entrer 1, 2, 3 ou 4")
+                    print()
+            except ValueError:
+                print("Erreur : Veuillez entrer un nombre (1, 2, 3 ou 4)")
+                print()
+
+    def request_tournament_id(self):
+        print("")
