@@ -15,9 +15,7 @@ class Tournament:
         description: str,
         date_start: datetime,
         date_end: datetime,
-        id: str = None,
     ):
-        self.id = id
         self.name = name
         self.location = location
         self.description = description
@@ -29,14 +27,16 @@ class Tournament:
         self.rounds: List[Round] = []
         self.players: List[Player] = []
 
+    def __str__(self) -> str:
+        return f"{self.name} - {self.location}"
+
     def to_dict(self):
         return {
-            "id": self.id,
             "name": self.name,
             "location": self.location,
             "description": self.description,
-            "date_start": self.date_start,
-            "date_end": self.date_end,
+            "date_start": self.date_start.strftime("%d-%m-%Y"),
+            "date_end": self.date_end.strftime("%d-%m-%Y"),
             "number_of_round": self.number_of_round,
             "number_of_current_round": self.number_of_current_round,
             "rounds": self.rounds,
@@ -61,24 +61,21 @@ class TournamentManager:
             name,
             location,
             description,
-            date_start.strftime("%d-%m-%Y"),
-            date_end.strftime("%d-%m-%Y"),
+            date_start,
+            date_end,
         )
 
         self.tournaments_table.insert(new_tournament.to_dict())
 
-        print("Tournoi enregistré avec succès !")
+        print(f"Tournoi '{new_tournament.name}' enregistré avec succès !")
 
     def get_tournaments(self):
-        tournament_data = self.tournaments_table.all()
-        tournaments = []
-        for tournament in tournament_data:
-            tournaments.append(
-                {
-                    "id": tournament.doc_id,
-                    "name": tournament["name"],
-                    "date_start": tournament["date_start"],
-                }
-            )
-
+        tournaments = self.tournaments_table.all()
         return tournaments
+
+    def get_last_tournament(self):
+        tournament_data = self.tournaments_table.all()
+        if not tournament_data:
+            return None
+        last_tournament = tournament_data[-1]
+        return last_tournament
