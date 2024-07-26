@@ -46,7 +46,7 @@ class PlayerView:
         return firstname, lastname, date_of_birth, point, national_id
 
     def request_id_player(self):
-        player_id: str = input("Veuillez entrer l'identifiant du joueur à modifier : ")
+        player_id: str = input("Veuillez entrer l'identifiant du joueur: ").strip()
         print()
         try:
             player_id: int = int(player_id)
@@ -86,7 +86,7 @@ class PlayerView:
         return firstname, lastname, date_of_birth_str, point_str, national_id
 
     def show_players(self, players):
-        print("Voici la liste des joueurs enregistrés.")
+        print("Liste des joueurs.")
         print(
             "---------------------------------------------------------------------------------------------------------"
         )

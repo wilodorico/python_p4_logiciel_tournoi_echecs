@@ -40,7 +40,7 @@ class Player:
 
 class PlayerManager:
     def __init__(self, db_path="data/players/players.json"):
-        self.db = TinyDB(db_path, indent=4)
+        self.db = TinyDB(db_path, indent=4, ensure_ascii=False, encoding="utf-8")
         self.players_table = self.db.table("players")
 
     def add_player(
@@ -62,9 +62,7 @@ class PlayerManager:
         )
 
         if player_exist:
-            return (
-                f"Le joueur {new_player.firstname} {new_player.lastname} existe déjà! Veuillez saisir un autre joueur",
-            )
+            return f"{new_player.firstname} {new_player.lastname} existe déjà ! Veuillez saisir un autre joueur."
 
         self.players_table.insert(
             {
