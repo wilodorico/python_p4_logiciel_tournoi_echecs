@@ -46,7 +46,7 @@ class Tournament:
 
 class TournamentManager:
     def __init__(self, db_path="data/tournaments/tournaments.json"):
-        self.db = TinyDB(db_path, indent=4)
+        self.db = TinyDB(db_path, indent=4, ensure_ascii=False, encoding="utf-8")
         self.tournaments_table = self.db.table("tournaments")
 
     def create_tournament(
@@ -79,3 +79,23 @@ class TournamentManager:
             return None
         last_tournament = tournament_data[-1]
         return last_tournament
+
+    def add_player_to_tournament(self, tournament_id, player: Player):
+        tournament = self.tournaments_table.get(doc_id=tournament_id)
+        if not tournament:
+            return None
+
+        for player_tournament in tournament["players"]:
+            if player_tournament["id"] == player.id:
+                return {
+                    "player_exist": True,
+                    "message": "Ce joueur est déjà enregistré au tournoi",
+                }
+
+        tournament["players"].append(player.to_dict())
+        self.tournaments_table.update(tournament, doc_ids=[tournament_id])
+
+        return {
+            "player_exist": False,
+            "message": f"Joueur {player.firstname} {player.lastname} ajouté au tournoi {tournament['name']}",
+        }
