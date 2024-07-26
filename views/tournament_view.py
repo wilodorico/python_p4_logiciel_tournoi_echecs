@@ -16,10 +16,10 @@ class TournamentView:
         return name, location, description, date_start, date_end
 
     def display_tournament_info(self, tournament):
-        print(f"Tournoi: {tournament.name} de {tournament.location}")
-        print(f"Description: {tournament.description}")
-        print(f"Date de début: {tournament.date_start}")
-        print(f"Date de fin: {tournament.date_end}")
+        print("-------------------------------")
+        print(f"Tournoi: {tournament["name"]} le {tournament["date_start"]}")
+        print(f"Finit le: {tournament["date_end"]}")
+        print("-------------------------------")
 
     def display_tournament_menu(self):
         print()
