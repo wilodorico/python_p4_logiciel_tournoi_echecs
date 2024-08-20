@@ -80,6 +80,24 @@ class TournamentManager:
         last_tournament = tournament_data[-1]
         return last_tournament
 
+    def get_registered_players(self, tournament_id):
+        tournament = self.tournaments_table.get(doc_id=tournament_id)
+        registered_players = tournament["players"]
+        players = []
+
+        for player in registered_players:
+            players.append(
+                Player(
+                    player["firstname"],
+                    player["lastname"],
+                    player["date_of_birth"],
+                    player["point"],
+                    player["national_id"],
+                    player["id"],
+                )
+            )
+        return players
+
     def add_player_to_tournament(self, tournament_id, player: Player):
         tournament = self.tournaments_table.get(doc_id=tournament_id)
         if not tournament:
