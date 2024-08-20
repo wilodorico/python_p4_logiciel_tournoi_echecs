@@ -55,8 +55,7 @@ class TournamentController:
                 case 1:
                     self.add_players_to_tournament(last_tournament.doc_id)
                 case 2:
-                    # self.show_players_of_tournament()
-                    print("TODO 2")
+                    self.show_players_of_tournament(last_tournament.doc_id)
                 case 3:
                     # self.managing_rounds_of_tournament()
                     print("TODO 3")
@@ -66,20 +65,32 @@ class TournamentController:
     def add_players_to_tournament(self, tournament_id):
         MAX_PLAYERS = 8
         print("Ajouter les joueurs par leur ID. Entrez 0 pour quitter.")
+
+        # Obtenir les joueurs restants et ceux déjà enregistrés
         player_data = self.player_manager.list_players()
-        remaining_players = player_data.copy()
-        added_players = []
+        registered_players = self.tournament_manager.get_registered_players(
+            tournament_id
+        )
+        remaining_players = [
+            p for p in player_data if p.id not in {rp.id for rp in registered_players}
+        ]
 
-        self.player_view.show_players(remaining_players)
+        # Afficher les joueurs disponibles et ceux déjà enregistrés
+        self.player_view.show_players(
+            remaining_players, "Liste des joueurs disponibles."
+        )
+        self.player_view.show_players(
+            registered_players, "Liste des joueurs enregistrés."
+        )
 
-        while len(added_players) < MAX_PLAYERS:
-            player_id: int = self.player_view.request_id_player()
+        while len(registered_players) < MAX_PLAYERS:
+            player_id = self.player_view.request_id_player()
             if player_id == 0:
                 break
 
             player = self.player_manager.get_player_by_id(player_id)
             if not player:
-                print("Impossible de trouver le joueur.")
+                print("ID invalide impossible de trouver le joueur.")
                 continue
 
             response = self.tournament_manager.add_player_to_tournament(
@@ -88,16 +99,25 @@ class TournamentController:
 
             if response["player_exist"]:
                 print(response["message"])
-
             else:
-                added_players.append(player)
-                remaining_players = [
-                    player for player in remaining_players if player.id != player_id
-                ]
+                registered_players.append(player)
+                remaining_players = [p for p in remaining_players if p.id != player_id]
 
                 print(response["message"])
+                print(f"Joueurs restants : {len(remaining_players)}")
 
-                print("Joueurs restants : ", len(remaining_players))
-                self.player_view.show_players(remaining_players)
+                self.player_view.show_players(
+                    remaining_players, "Liste des joueurs disponibles."
+                )
+                self.player_view.show_players(
+                    registered_players, "Liste des joueurs enregistrés."
+                )
 
-                self.player_view.show_players(added_players)
+        if len(registered_players) >= MAX_PLAYERS:
+            print("Le nombre maximal de joueurs a été atteint pour ce tournoi.")
+
+    def show_players_of_tournament(self, tournament_id):
+        players = self.tournament_manager.get_registered_players(tournament_id)
+        self.player_view.show_players(
+            players, "Liste des joueurs enregistrés au tournoi."
+        )
