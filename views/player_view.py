@@ -1,3 +1,4 @@
+from models.player_model import Player
 from utils.input_validation import (
     get_non_empty_input,
     get_valid_date_format,
@@ -85,11 +86,15 @@ class PlayerView:
 
         return firstname, lastname, date_of_birth_str, point_str, national_id
 
-    def show_players(self, players):
-        print("Liste des joueurs.")
+    def show_players(self, players: list[Player], message: str):
+        print(message)
         print(
             "---------------------------------------------------------------------------------------------------------"
         )
+        if not players:
+            print("Aucun joueur Enregistré.")
+            return
+
         for player in players:
             print(player.to_dict())
 

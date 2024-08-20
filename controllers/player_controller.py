@@ -48,4 +48,4 @@ class PlayerController:
 
     def show_players(self):
         players = self.player_manager.list_players()
-        self.player_view.show_players(players)
+        self.player_view.show_players(players, "Liste des joueurs.")
