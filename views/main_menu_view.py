@@ -5,7 +5,7 @@ class MainMenuView:
         print("Menu principal : ")
         print("-----------------------------")
         print("1. Gestion joueur")
-        print("2. Créer un tournoi")
+        print("2. Gestion tournoi")
         print("3. Quitter")
         print()
 

@@ -18,7 +18,7 @@ class MainMenuController:
             if choice == 1:
                 self.player_controller.run()
             if choice == 2:
-                self.tournament_controller.create_tournament()
+                self.tournament_controller.run()
             if choice == 3:
                 print("Merci d'avoir utilisé le programme.")
                 break
