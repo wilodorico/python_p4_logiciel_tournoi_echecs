@@ -47,22 +47,24 @@ class TournamentView:
 
     def display_tournaments(self, tournaments):
         print("Liste des tournois enregistrés.")
-        print(
-            "-------------------------------------------------------------------------------"
-        )
+        print("-------------------------------------------------------------------------------")
         if tournaments:
             for tournament in tournaments:
-                print(f"ID : {tournament.doc_id} - {tournament}")
+                print(
+                    (
+                        f"ID: {tournament.doc_id} - {tournament['name']} "
+                        f"à {tournament['location']} "
+                        f"du {tournament['date_start']} au {tournament['date_end']}"
+                    )
+                )
         else:
             print("Aucun tournoi enregistré.")
-        print(
-            "-------------------------------------------------------------------------------"
-        )
+        print("-------------------------------------------------------------------------------")
 
     def display_tournament_management_menu(self):
         print()
-        print("1. Ajouter les joueurs")
-        print("2. Liste des joueurs enregistrés")
+        print("1. Inscrire les joueurs")
+        print("2. Liste des joueurs inscrits")
         print("3. Gérer les tours")
         print("4. Retour au menu principal")
 

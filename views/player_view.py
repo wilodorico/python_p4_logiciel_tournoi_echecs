@@ -40,9 +40,7 @@ class PlayerView:
         lastname = get_non_empty_input("Entrez son nom : ")
         date_of_birth = get_valid_date_format("Entrez sa date de naissance : ")
         point = get_valid_float("Entrez son nombre de point : ")
-        national_id = get_valid_national_id_format(
-            "Entrez son identifiant nationnal : "
-        )
+        national_id = get_valid_national_id_format("Entrez son identifiant nationnal : ")
 
         return firstname, lastname, date_of_birth, point, national_id
 
@@ -59,29 +57,14 @@ class PlayerView:
 
     def request_update_player_info(self, player):
         print("Laisser le champ vide si vous ne voulez pas le changer.")
-        firstname = (
-            input(f"Mettre à jour son prénom ({player.firstname}): ").strip()
-            or player.firstname
-        )
-        lastname = (
-            input(f"Mettre à jour son nom ({player.lastname}): ").strip()
-            or player.lastname
-        )
+        firstname = input(f"Mettre à jour son prénom ({player.firstname}): ").strip() or player.firstname
+        lastname = input(f"Mettre à jour son nom ({player.lastname}): ").strip() or player.lastname
         date_of_birth_str = (
-            input(
-                f"Mettre à jour sa date de naissance ({player.date_of_birth}): "
-            ).strip()
-            or player.date_of_birth
+            input(f"Mettre à jour sa date de naissance ({player.date_of_birth}): ").strip() or player.date_of_birth
         )
-        point_str = (
-            input(f"Mettre à jour ses points ({player.point}): ").strip()
-            or player.point
-        )
+        point_str = input(f"Mettre à jour ses points ({player.point}): ").strip() or player.point
         national_id = (
-            input(
-                f"Mettre à jour son identifiant nationnal ({player.national_id}): "
-            ).strip()
-            or player.national_id
+            input(f"Mettre à jour son identifiant nationnal ({player.national_id}): ").strip() or player.national_id
         )
 
         return firstname, lastname, date_of_birth_str, point_str, national_id
