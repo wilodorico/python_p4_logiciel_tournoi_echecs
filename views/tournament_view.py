@@ -17,17 +17,20 @@ class TournamentView:
 
     def display_tournament_info(self, tournament):
         print("-------------------------------")
-        print(f"Tournoi: {tournament["name"]} le {tournament["date_start"]}")
-        print(f"Finit le: {tournament["date_end"]}")
+        print(f"Tournoi: {tournament['name']} le {tournament['date_start']}")
+        print(f"Finit le: {tournament['date_end']}")
         print("-------------------------------")
 
     def display_tournament_menu(self):
-        print()
+        print("-------------------------------")
+        print("Menu :Gestion tournoi")
+        print("-------------------------------")
         print("1. Liste des tournois")
         print("2. Créer un tournoi")
         print("3. Gérer le dernier tournoi créé")
         print("4. Gérer un tournoi")
         print("5. Retour au menu principal")
+        print("-------------------------------")
 
     def request_user_choice(self):
         while True:
@@ -66,7 +69,7 @@ class TournamentView:
         print("1. Inscrire les joueurs")
         print("2. Liste des joueurs inscrits")
         print("3. Gérer les tours")
-        print("4. Retour au menu principal")
+        print("4. Retour au menu gestion tournoi")
 
     def request_tournament_management_choice(self):
         while True:
