@@ -26,6 +26,7 @@ class Tournament:
         self.number_of_current_round: int = 0
         self.rounds: List[Round] = []
         self.players: List[Player] = []
+        self.max_players: int = self.number_of_round * 2
 
     def __str__(self) -> str:
         return f"{self.name} - {self.location}"
@@ -41,6 +42,7 @@ class Tournament:
             "number_of_current_round": self.number_of_current_round,
             "rounds": self.rounds,
             "players": self.players,
+            "max_players": self.max_players,
         }
 
 
@@ -90,6 +92,7 @@ class TournamentManager:
         tournament_instance.number_of_current_round = tournament["number_of_current_round"]
         tournament_instance.rounds = tournament["rounds"]
         tournament_instance.players = tournament["players"]
+        tournament_instance.max_players = tournament["max_players"]
 
         return tournament_instance
 
@@ -137,3 +140,9 @@ class TournamentManager:
             "player_exist": False,
             "message": f"Joueur {player.firstname} {player.lastname} ajouté au tournoi {tournament['name']}",
         }
+
+    def get_max_players(self, tournament_id):
+        tournament = self.tournaments_table.get(doc_id=tournament_id)
+        if not tournament:
+            return print("Aucun tournoi trouvé")
+        return tournament["max_players"]

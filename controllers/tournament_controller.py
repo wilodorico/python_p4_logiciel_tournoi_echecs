@@ -59,8 +59,7 @@ class TournamentController:
                     break
 
     def add_players_to_tournament(self, tournament_id):
-        MAX_PLAYERS = 8
-        print("Ajouter les joueurs par leur ID. Entrez 0 pour quitter.")
+        max_players: int = self.tournament_manager.get_max_players(tournament_id)
 
         # Obtenir les joueurs restants et ceux déjà enregistrés
         player_data = self.player_manager.list_players()
@@ -69,9 +68,12 @@ class TournamentController:
 
         # Afficher les joueurs disponibles et ceux déjà enregistrés
         self.player_view.show_players(remaining_players, "Liste des joueurs disponibles.")
-        self.player_view.show_players(registered_players, "Liste des joueurs enregistrés.")
+        self.player_view.show_players(
+            registered_players, f"Joueurs inscrits au tournoi {len(registered_players)}/{max_players}"
+        )
 
-        while len(registered_players) < MAX_PLAYERS:
+        while len(registered_players) < max_players:
+            print("Entrez 0 pour quitter.")
             player_id = self.player_view.request_id_player()
             if player_id == 0:
                 break
@@ -90,14 +92,15 @@ class TournamentController:
                 remaining_players = [p for p in remaining_players if p.id != player_id]
 
                 print(response["message"])
-                print(f"Joueurs restants : {len(remaining_players)}")
 
                 self.player_view.show_players(remaining_players, "Liste des joueurs disponibles.")
-                self.player_view.show_players(registered_players, "Liste des joueurs enregistrés.")
+                self.player_view.show_players(
+                    registered_players, f"Joueurs inscrits au tournoi {len(registered_players)}/{max_players}"
+                )
 
-        if len(registered_players) >= MAX_PLAYERS:
+        if len(registered_players) >= max_players:
             print("Le nombre maximal de joueurs a été atteint pour ce tournoi.")
 
     def show_players_of_tournament(self, tournament_id):
         players = self.tournament_manager.get_registered_players(tournament_id)
-        self.player_view.show_players(players, "Liste des joueurs enregistrés au tournoi.")
+        self.player_view.show_players(players, "Liste des joueurs inscrits au tournoi.")
