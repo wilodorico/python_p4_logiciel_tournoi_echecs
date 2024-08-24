@@ -23,7 +23,7 @@ class Tournament:
         self.date_end = date_end
 
         self.number_of_round: int = 4
-        self.number_of_current_round: int = 1
+        self.number_of_current_round: int = 0
         self.rounds: List[Round] = []
         self.players: List[Player] = []
 
@@ -72,6 +72,26 @@ class TournamentManager:
     def get_tournaments(self):
         tournaments = self.tournaments_table.all()
         return tournaments
+
+    def get_tournament_by_id(self, tournament_id):
+        tournament = self.tournaments_table.get(doc_id=tournament_id)
+        if not tournament:
+            return None
+
+        tournament_instance = Tournament(
+            tournament["name"],
+            tournament["location"],
+            tournament["description"],
+            tournament["date_start"],
+            tournament["date_end"],
+        )
+
+        tournament_instance.number_of_round = tournament["number_of_round"]
+        tournament_instance.number_of_current_round = tournament["number_of_current_round"]
+        tournament_instance.rounds = tournament["rounds"]
+        tournament_instance.players = tournament["players"]
+
+        return tournament_instance
 
     def get_last_tournament(self):
         tournament_data = self.tournaments_table.all()
