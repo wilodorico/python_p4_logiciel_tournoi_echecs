@@ -141,3 +141,19 @@ class RoundManager:
             print(f"Le joueur {players[-1]['firstname']} {players[-1]['lastname']} n'a pas d'adversaire pour ce round")
 
         return matches
+
+    def get_current_round_matches(self, tournament_id):
+        tournament = self.tournaments_table.get(doc_id=tournament_id)
+        if not tournament:
+            print(f"Aucun tournoi trouvé avec l'ID: {tournament_id}")
+            return
+        if not tournament["rounds"]:
+            print("Aucun Round créé: Veuillez d'abord créer un Round")
+            return
+        current_round = tournament["rounds"][-1]
+
+        if current_round["status"] != RoundStatus.STARTED.value:
+            print("Le Round n°1 n'est pas encore démarré")
+            return
+
+        return current_round.get("matches", [])

@@ -34,16 +34,25 @@ class RoundController:
                 case 1:
                     self.start_round(self.current_tournament_id)
                 case 2:
-                    self.end_round()
+                    self.display_matches(self.current_tournament_id)
                 case 3:
                     print("TODO renseigner les scores")
                 case 4:
+                    self.end_round()
+                case 5:
                     break
 
     def start_round(self, tournament_id):
         self.round_manager.create_round(tournament_id)
         self.round_manager.start_round(tournament_id)
         self.round_manager.generate_matches(tournament_id)
+
+    def display_matches(self, tournament_id):
+        matches = self.round_manager.get_current_round_matches(tournament_id)
+        if matches:
+            self.round_view.display_matches(matches)
+        else:
+            print("Aucun match généré pour le round actuel. Veuillez démarrer un round et générer les matchs.")
 
     def end_round(self):
         print("Round 1 terminé")
