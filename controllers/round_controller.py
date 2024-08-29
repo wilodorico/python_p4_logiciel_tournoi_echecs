@@ -32,22 +32,18 @@ class RoundController:
 
             match choice:
                 case 1:
-                    self.create_round()
+                    self.start_round(self.current_tournament_id)
                 case 2:
-                    self.start_round()
-                case 3:
                     self.end_round()
-                case 4:
+                case 3:
                     print("TODO renseigner les scores")
-                case 5:
+                case 4:
                     break
 
-    def create_round(self):
-        self.total_rounds = len(self.current_tournament.rounds) + 1
-        self.round_manager.create_round(self.current_tournament_id)
-
-    def start_round(self):
-        self.round_manager.start_round(self.current_tournament_id)
+    def start_round(self, tournament_id):
+        self.round_manager.create_round(tournament_id)
+        self.round_manager.start_round(tournament_id)
+        self.round_manager.generate_matches(tournament_id)
 
     def end_round(self):
         print("Round 1 terminé")
