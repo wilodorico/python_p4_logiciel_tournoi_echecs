@@ -63,6 +63,7 @@ class RoundController:
                 choice = self.round_view.prompt_for_match_result(match, i + 1)
                 choices.append(choice)
             self.round_manager.enter_scores(self.current_tournament_id, choices)
+            self.round_manager.update_player_scores(tournament_id)
 
     def end_round(self):
         print("Round 1 terminé")

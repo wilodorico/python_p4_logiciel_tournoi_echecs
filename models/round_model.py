@@ -115,7 +115,7 @@ class RoundManager:
             else:
                 return print("Les matchs sont déjà générés, terminez le Round en saisissant les scores")
         else:
-            print("TODO")
+            self.matches = self.create_rank_based_matches(tournament, players)
 
         tournament["rounds"][-1]["matches"] = self.matches
         self.tournaments_table.update(tournament, doc_ids=[tournament_id])
@@ -141,6 +141,45 @@ class RoundManager:
             print(f"Le joueur {players[-1]['firstname']} {players[-1]['lastname']} n'a pas d'adversaire pour ce round")
 
         return matches
+
+    def create_rank_based_matches(self, tournament, players: List[Player]):
+        matches = []
+        # Tri des joueurs par score total
+        players.sort(key=lambda player: player["point"], reverse=True)
+        already_played = self.get_already_played_pairs(tournament)
+
+        for i in range(0, len(players) - 1, 2):
+            player1 = players[i]
+            for j in range(i + 1, len(players)):
+                player2 = players[j]
+                if (player1["id"], player2["id"]) not in already_played and (
+                    player2["id"],
+                    player1["id"],
+                ) not in already_played:
+                    match = Match(
+                        player1["firstname"] + " " + player1["lastname"],
+                        0.0,
+                        player2["firstname"] + " " + player2["lastname"],
+                        0.0,
+                    )
+                    matches.append(match.players)
+                    # players.pop(j)  # Retirer player2 pour éviter les doublons
+                    break
+
+        if len(players) % 2 != 0:
+            print(f"Le joueur {players[-1]['firstname']} {players[-1]['lastname']} n'a pas d'adversaire pour ce round")
+
+        return matches
+
+    def get_already_played_pairs(self, tournament):
+        """Returns a set of pairs of players who have already met."""
+        already_played = set()
+        for round_data in tournament["rounds"]:
+            for match in round_data["matches"]:
+                player1_id = match[0][0]
+                player2_id = match[1][0]
+                already_played.add((player1_id, player2_id))
+        return already_played
 
     def get_current_round_matches(self, tournament_id):
         tournament = self.tournaments_table.get(doc_id=tournament_id)
@@ -202,3 +241,53 @@ class RoundManager:
         match[0][1] = score1
         match[1][1] = score2
         print(f"Scores mis à jour : {match[0][0]} ({score1}) - {match[1][0]} ({score2})")
+
+    def update_player_scores(self, tournament_id):
+        """Updates players' total points based on match results."""
+        tournament = self.tournaments_table.get(doc_id=tournament_id)
+        if not tournament:
+            print(f"Aucun tournoi trouvé avec l'ID: {tournament_id}")
+            return
+
+        # Initialize or reset player scores
+        player_points = {player["id"]: 0.0 for player in tournament.get("players", [])}
+
+        # Scroll through each round and match to calculate players' total scores
+        for round_data in tournament["rounds"]:
+            for match in round_data["matches"]:
+                # Extract player IDs and their respective scores
+                player1_name = match[0][0]
+                player1_score = match[0][1]
+                player2_name = match[1][0]
+                player2_score = match[1][1]
+
+                # Find players by full name
+                player1 = next(
+                    (
+                        player
+                        for player in tournament["players"]
+                        if f"{player['firstname']} {player['lastname']}" == player1_name
+                    ),
+                    None,
+                )
+                player2 = next(
+                    (
+                        player
+                        for player in tournament["players"]
+                        if f"{player['firstname']} {player['lastname']}" == player2_name
+                    ),
+                    None,
+                )
+
+                if player1:
+                    player_points[player1["id"]] += player1_score
+                if player2:
+                    player_points[player2["id"]] += player2_score
+
+        # Update players' points in the tournament
+        for player in tournament["players"]:
+            player["point"] = player_points[player["id"]]
+
+        # Save updated data in the database
+        self.tournaments_table.update(tournament, doc_ids=[tournament_id])
+        print("Scores des joueurs mis à jour avec succès.")

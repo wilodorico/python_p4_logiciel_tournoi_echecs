@@ -17,7 +17,7 @@ class RoundView:
             print()
             try:
                 choice_number: int = int(choice)
-                if choice_number in [1, 2, 3, 4]:
+                if choice_number in [1, 2, 3, 4, 5]:
                     return choice_number
                 else:
                     print("Choix invalide : Veuillez entrer 1, 2, 3, 4 ou 5")
