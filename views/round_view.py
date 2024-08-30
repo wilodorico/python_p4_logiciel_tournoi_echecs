@@ -35,3 +35,22 @@ class RoundView:
             score2 = match[1][1]
             print(f"Match {i + 1}: {player1} (Score: {score1}) vs {player2} (Score: {score2})")
         print()
+
+    def prompt_for_match_result(self, match, match_number: int):
+        """Affiche les options de résultats pour un match et renvoie le choix de l'utilisateur."""
+        player1_name = match[0][0]
+        player2_name = match[1][0]
+        print(f"\nRésultat du match {match_number}: {player1_name} vs {player2_name}")
+        print("1. Victoire de", player1_name)
+        print("2. Victoire de", player2_name)
+        print("3. Égalité")
+
+        while True:
+            try:
+                choice: int = int(input("Choisissez le résultat (1, 2, 3): "))
+                if choice in [1, 2, 3]:
+                    return choice
+                else:
+                    print("Choix invalide. Veuillez entrer 1, 2 ou 3.")
+            except ValueError:
+                print("Entrée invalide. Veuillez entrer un nombre.")

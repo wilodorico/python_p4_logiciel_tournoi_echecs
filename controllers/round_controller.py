@@ -1,3 +1,4 @@
+from typing import List
 from models.player_model import PlayerManager
 from models.round_model import RoundManager
 from models.tournament_model import TournamentManager
@@ -36,7 +37,7 @@ class RoundController:
                 case 2:
                     self.display_matches(self.current_tournament_id)
                 case 3:
-                    print("TODO renseigner les scores")
+                    self.enter_scores(self.current_tournament_id)
                 case 4:
                     self.end_round()
                 case 5:
@@ -53,6 +54,15 @@ class RoundController:
             self.round_view.display_matches(matches)
         else:
             print("Aucun match généré pour le round actuel. Veuillez démarrer un round et générer les matchs.")
+
+    def enter_scores(self, tournament_id):
+        matches = self.round_manager.get_current_round_matches(tournament_id)
+        if matches:
+            choices: List[int] = []
+            for i, match in enumerate(matches):
+                choice = self.round_view.prompt_for_match_result(match, i + 1)
+                choices.append(choice)
+            self.round_manager.enter_scores(self.current_tournament_id, choices)
 
     def end_round(self):
         print("Round 1 terminé")

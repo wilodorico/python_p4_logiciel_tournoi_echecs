@@ -151,9 +151,54 @@ class RoundManager:
             print("Aucun Round créé: Veuillez d'abord créer un Round")
             return
         current_round = tournament["rounds"][-1]
+        current_round_number = len(tournament["rounds"])
 
         if current_round["status"] != RoundStatus.STARTED.value:
-            print("Le Round n°1 n'est pas encore démarré")
-            return
+            return print(f"Les scores du Round n°{current_round_number} ont déjà été enregistrés.")
 
         return current_round.get("matches", [])
+
+    def enter_scores(self, tournament_id, choices):
+        """Assigns match scores for the current round according to the user's choices."""
+        tournament = self.tournaments_table.get(doc_id=tournament_id)
+        if not tournament:
+            print(f"Aucun tournoi trouvé avec l'ID: {tournament_id}")
+            return
+
+        if not tournament["rounds"]:
+            print("Aucun Round créé: Veuillez d'abord créer un Round")
+            return
+
+        current_round = tournament["rounds"][-1]
+
+        if current_round["status"] != RoundStatus.STARTED.value:
+            print(
+                f"Les scores ne peuvent être enregistrés que pour un round en cours. {current_round['name']} n'est pas en cours."
+            )
+            return
+
+        matches = current_round.get("matches", [])
+
+        # Assign scores based on user choices
+        for i, choice in enumerate(choices):
+            match = matches[i]
+            if choice == 1:
+                self.set_match_result(match, 1.0, 0.0)
+            elif choice == 2:
+                self.set_match_result(match, 0.0, 1.0)
+            elif choice == 3:
+                self.set_match_result(match, 0.5, 0.5)
+
+        # Update tournament with new scores
+        current_round["matches"] = matches
+        current_round["status"] = RoundStatus.FINISHED.value
+        current_round["end_at"] = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+        self.tournaments_table.update(tournament, doc_ids=[tournament_id])
+
+        print(f"Scores enregistrés pour {current_round['name']} et le round est maintenant terminé.")
+
+    def set_match_result(self, match, score1: float, score2: float):
+        """Assigns scores to players in a match."""
+        match[0][1] = score1
+        match[1][1] = score2
+        print(f"Scores mis à jour : {match[0][0]} ({score1}) - {match[1][0]} ({score2})")
