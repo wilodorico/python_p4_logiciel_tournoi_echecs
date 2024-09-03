@@ -14,33 +14,28 @@ class RoundController:
         self.tournament_manager = TournamentManager()
         self.player_manager = PlayerManager()
         self.main_menu_view = MainMenuView()
-        self.current_tournament_id = None
         self.current_tournament = None
-        self.total_rounds = 0
 
     def run(self, tournament_id):
-        self.current_tournament_id = tournament_id
         self.current_tournament = self.tournament_manager.get_tournament_by_id(tournament_id)
-        self.total_rounds = len(self.current_tournament.rounds) + 1
+        current_round_number = self.current_tournament.number_of_current_round + 1
 
         print(f"Tournoi {self.current_tournament.name} à {self.current_tournament.location}")
         print(f"Du {self.current_tournament.date_start} au {self.current_tournament.date_end}")
         print()
 
         while True:
-            self.round_view.display_main_menu(self.total_rounds)
+            self.round_view.display_main_menu(current_round_number)
             choice: int = self.round_view.request_user_choice()
 
             match choice:
                 case 1:
-                    self.start_round(self.current_tournament_id)
+                    self.start_round(tournament_id)
                 case 2:
-                    self.display_matches(self.current_tournament_id)
+                    self.display_matches(tournament_id)
                 case 3:
-                    self.enter_scores(self.current_tournament_id)
+                    self.enter_scores(tournament_id)
                 case 4:
-                    self.end_round()
-                case 5:
                     break
 
     def start_round(self, tournament_id):
@@ -62,8 +57,5 @@ class RoundController:
             for i, match in enumerate(matches):
                 choice = self.round_view.prompt_for_match_result(match, i + 1)
                 choices.append(choice)
-            self.round_manager.enter_scores(self.current_tournament_id, choices)
+            self.round_manager.enter_scores(tournament_id, choices)
             self.round_manager.update_player_scores(tournament_id)
-
-    def end_round(self):
-        print("Round 1 terminé")

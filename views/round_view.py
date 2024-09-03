@@ -7,23 +7,22 @@ class RoundView:
         print(f"1. Démarrer le Round n°{round_number}")
         print("2. Afficher la liste des matchs")
         print("3. Renseigner les scores")
-        print("4. Terminer le Round")
-        print("5. Retour au menu du tournois")
+        print("4. Retour au menu du tournoi")
         print()
 
     def request_user_choice(self) -> int:
         while True:
-            choice = input("Veuillez entrer un choix (1, 2, 3, 4 ou 5) : ")
+            choice = input("Veuillez entrer un choix (1, 2, 3 ou 4) : ")
             print()
             try:
                 choice_number: int = int(choice)
-                if choice_number in [1, 2, 3, 4, 5]:
+                if choice_number in [1, 2, 3, 4]:
                     return choice_number
                 else:
-                    print("Choix invalide : Veuillez entrer 1, 2, 3, 4 ou 5")
+                    print("Choix invalide : Veuillez entrer 1, 2, 3, ou 4")
                     print()
             except ValueError:
-                print("Erreur : Veuillez entrer un nombre (1, 2, 3, 4 ou 5)")
+                print("Erreur : Veuillez entrer un nombre (1, 2, 3, ou 4)")
                 print()
 
     def display_matches(self, matches):

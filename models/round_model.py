@@ -115,7 +115,7 @@ class RoundManager:
             else:
                 return print("Les matchs sont déjà générés, terminez le Round en saisissant les scores")
         else:
-            self.matches = self.create_rank_based_matches(tournament, players)
+            self.matches = self.create_matches_based_on_ranking(tournament, players)
 
         tournament["rounds"][-1]["matches"] = self.matches
         self.tournaments_table.update(tournament, doc_ids=[tournament_id])
@@ -142,32 +142,46 @@ class RoundManager:
 
         return matches
 
-    def create_rank_based_matches(self, tournament, players: List[Player]):
+    def create_matches_based_on_ranking(self, tournament, players: List[dict]):
         matches = []
-        # Tri des joueurs par score total
+
+        # Sort players by total score (from highest to lowest)
         players.sort(key=lambda player: player["point"], reverse=True)
+
+        # Get pairs of players who have already played together
         already_played = self.get_already_played_pairs(tournament)
 
-        for i in range(0, len(players) - 1, 2):
-            player1 = players[i]
-            for j in range(i + 1, len(players)):
-                player2 = players[j]
-                if (player1["id"], player2["id"]) not in already_played and (
-                    player2["id"],
-                    player1["id"],
-                ) not in already_played:
+        # List of unmatched players in this round
+        unpaired_players = players.copy()
+
+        # As long as there are unpaired players
+        while unpaired_players:
+            player1 = unpaired_players.pop(0)  # Retrieve the first unmatched player
+
+            # Search for an opponent with whom player1 has not yet played
+            for i in range(len(unpaired_players)):
+                player2 = unpaired_players[i]
+
+                # Check whether the pair have played together before
+                player1_name = f"{player1['firstname']} {player1['lastname']}"
+                player2_name = f"{player2['firstname']} {player2['lastname']}"
+
+                if (player1_name, player2_name) not in already_played:
+                    # Create a new match pair
                     match = Match(
-                        player1["firstname"] + " " + player1["lastname"],
+                        player1_name,
                         0.0,
-                        player2["firstname"] + " " + player2["lastname"],
+                        player2_name,
                         0.0,
                     )
                     matches.append(match.players)
-                    # players.pop(j)  # Retirer player2 pour éviter les doublons
-                    break
 
-        if len(players) % 2 != 0:
-            print(f"Le joueur {players[-1]['firstname']} {players[-1]['lastname']} n'a pas d'adversaire pour ce round")
+                    # Mark both players as paired for this round
+                    unpaired_players.pop(i)  # Remove player2 from the unmatched list
+                    break  # Exit the inner loop after finding an opponent for player1
+
+        # If the logic is correct, there should never be any unmatched players.
+        assert len(matches) == len(players) // 2, "Tous les joueurs n'ont pas été appariés correctement."
 
         return matches
 
@@ -176,9 +190,10 @@ class RoundManager:
         already_played = set()
         for round_data in tournament["rounds"]:
             for match in round_data["matches"]:
-                player1_id = match[0][0]
-                player2_id = match[1][0]
-                already_played.add((player1_id, player2_id))
+                player1_name = match[0][0]
+                player2_name = match[1][0]
+                already_played.add((player1_name, player2_name))
+                already_played.add((player2_name, player1_name))
         return already_played
 
     def get_current_round_matches(self, tournament_id):
@@ -291,3 +306,18 @@ class RoundManager:
         # Save updated data in the database
         self.tournaments_table.update(tournament, doc_ids=[tournament_id])
         print("Scores des joueurs mis à jour avec succès.")
+
+    def check_tournament_finished(self, tournament):
+        """Vérifie si le tournoi est terminé et affiche le classement final."""
+        number_of_round = tournament["number_of_round"]
+        number_of_current_round = len(tournament["rounds"])
+
+        # Vérifier si le dernier round est terminé et que le nombre de rounds créés est égal au nombre total de rounds
+        if number_of_current_round == number_of_round:
+            last_round = tournament["rounds"][-1]
+            if last_round["status"] == RoundStatus.FINISHED.value:
+                print("Tournoi terminé!")
+                self.display_final_rankings(tournament)
+                # Retourner au menu principal
+                return True
+        return False
