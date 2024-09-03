@@ -204,11 +204,9 @@ class RoundManager:
         if not tournament["rounds"]:
             print("Aucun Round créé: Veuillez d'abord créer un Round")
             return
-        current_round = tournament["rounds"][-1]
-        current_round_number = len(tournament["rounds"])
 
-        if current_round["status"] != RoundStatus.STARTED.value:
-            return print(f"Les scores du Round n°{current_round_number} ont déjà été enregistrés.")
+        current_round_number: int = tournament["number_of_current_round"]
+        current_round = tournament["rounds"][current_round_number - 1]
 
         return current_round.get("matches", [])
 

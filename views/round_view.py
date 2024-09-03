@@ -26,7 +26,7 @@ class RoundView:
                 print()
 
     def display_matches(self, matches):
-        print("\n=== Liste des matchs générés ===")
+        print("=== Liste des matchs ===")
         for i, match in enumerate(matches):
             player1 = match[0][0]
             score1 = match[0][1]
