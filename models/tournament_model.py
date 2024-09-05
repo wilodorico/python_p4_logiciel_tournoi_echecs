@@ -4,7 +4,7 @@ from typing import List
 from tinydb import TinyDB
 
 from models.player_model import Player
-from models.round_model import Round
+from models.round_model import Round, RoundStatus
 
 
 class Tournament:
@@ -146,3 +146,32 @@ class TournamentManager:
         if not tournament:
             return print("Aucun tournoi trouvé")
         return tournament["max_players"]
+
+    def check_tournament_finished(self, tournament_id):
+        """Vérifie si le tournoi est terminé et affiche le classement final."""
+        tournament = self.tournaments_table.get(doc_id=tournament_id)
+        if not tournament:
+            return print("Aucun tournoi trouvé")
+        number_of_round = tournament["number_of_round"]
+        number_of_current_round = len(tournament["rounds"])
+
+        # Vérifier si le dernier round est terminé et que le nombre de rounds créés est égal au nombre total de rounds
+        if number_of_current_round == number_of_round:
+            last_round = tournament["rounds"][-1]
+            if last_round["status"] == RoundStatus.FINISHED.value:
+                print("Tournoi terminé!")
+                return True
+        return False
+
+    def display_final_rankings(self, tournament_id):
+        """Affiche le classement final des joueurs basé sur leurs points."""
+        tournament = self.tournaments_table.get(doc_id=tournament_id)
+        if not tournament:
+            return print("Aucun tournoi trouvé")
+        players = tournament.get("players", [])
+        players.sort(key=lambda player: player["point"], reverse=True)
+
+        print("\n=== Classement Final ===")
+        for rank, player in enumerate(players, start=1):
+            print(f"{rank}. {player['firstname']} {player['lastname']} - {player['point']} points")
+        print("=========================\n")

@@ -304,18 +304,3 @@ class RoundManager:
         # Save updated data in the database
         self.tournaments_table.update(tournament, doc_ids=[tournament_id])
         print("Scores des joueurs mis à jour avec succès.")
-
-    def check_tournament_finished(self, tournament):
-        """Vérifie si le tournoi est terminé et affiche le classement final."""
-        number_of_round = tournament["number_of_round"]
-        number_of_current_round = len(tournament["rounds"])
-
-        # Vérifier si le dernier round est terminé et que le nombre de rounds créés est égal au nombre total de rounds
-        if number_of_current_round == number_of_round:
-            last_round = tournament["rounds"][-1]
-            if last_round["status"] == RoundStatus.FINISHED.value:
-                print("Tournoi terminé!")
-                self.display_final_rankings(tournament)
-                # Retourner au menu principal
-                return True
-        return False
