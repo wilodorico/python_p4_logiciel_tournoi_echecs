@@ -1,5 +1,6 @@
 from rich.console import Console
-from rich.prompt import Prompt
+from rich.prompt import IntPrompt
+from utils.rich_component import alert_message
 
 
 class MainMenuView:
@@ -17,14 +18,7 @@ class MainMenuView:
     def request_user_choice(self) -> int:
         while True:
             try:
-                choice = Prompt.ask("Veuillez entrer un choix", choices=["1", "2", "3"])
-                print()
-                choice_number: int = int(choice)
-                if choice_number in [1, 2, 3]:
-                    return choice_number
-                else:
-                    print("Choix invalide : Veuillez entrer 1, 2 ou 3")
-                    print()
+                choice: int = IntPrompt.ask("Veuillez entrer un choix", choices=["1", "2", "3"])
+                return choice
             except ValueError:
-                print("Erreur : Veuillez entrer un nombre (1, 2 ou 3)")
-                print()
+                alert_message("Erreur : Veuillez entrer un nombre (1, 2 ou 3)", "red")
