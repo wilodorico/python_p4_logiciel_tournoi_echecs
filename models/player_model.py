@@ -1,7 +1,7 @@
 import datetime
 from typing import List
 from tinydb import TinyDB, where
-from rich.console import Console
+from utils.rich_component import alert_message
 
 
 class Player:
@@ -43,7 +43,6 @@ class PlayerManager:
     def __init__(self, db_path="data/players/players.json"):
         self.db = TinyDB(db_path, indent=4, ensure_ascii=False, encoding="utf-8")
         self.players_table = self.db.table("players")
-        self.console = Console()
 
     def add_player(
         self,
@@ -73,10 +72,9 @@ class PlayerManager:
                 "national_id": new_player.national_id,
             }
         )
-        return f"Joueur {new_player.firstname} enregistré avec succès !"
+        alert_message(f"Joueur {new_player.firstname} {new_player.lastname} ajouté avec succès !", "green")
 
     def update_player(self, player_id, firstname, lastname, date_of_birth, point, national_id):
-
         updated_data = {
             "firstname": firstname,
             "lastname": lastname,
@@ -86,8 +84,7 @@ class PlayerManager:
         }
 
         self.players_table.update(updated_data, doc_ids=[player_id])
-
-        self.console.print("Joueur modifié avec succés !", style="green")
+        alert_message("Joueur modifié avec succés !", "green")
 
     def list_players(self):
         players_data = self.players_table.all()
@@ -109,7 +106,7 @@ class PlayerManager:
     def get_player_by_id(self, player_id):
         player = self.players_table.get(doc_id=player_id)
         if not player:
-            print("Le joueur avec cet identifiant n'existe pas")
+            alert_message("Le joueur avec cet identifiant n'existe pas", "red")
             return
         return Player(
             firstname=player["firstname"],
