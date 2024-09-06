@@ -25,26 +25,18 @@ class PlayerController:
                 break
 
     def add_player(self):
-        firstname, lastname, date_of_birth, point, national_id = (
-            self.player_view.request_player_info()
-        )
-        message = self.player_manager.add_player(
-            firstname, lastname, date_of_birth, point, national_id
-        )
-        print()
-        print(message)
+        firstname, lastname, date_of_birth, point, national_id = self.player_view.request_player_info()
+        self.player_manager.add_player(firstname, lastname, date_of_birth, point, national_id)
 
     def modify_player(self):
         self.show_players()
         player_id: int = self.player_view.request_id_player()
         player = self.player_manager.get_player_by_id(player_id)
         if player:
-            firstname, lastname, date_of_birth, point, national_id = (
-                self.player_view.request_update_player_info(player)
+            firstname, lastname, date_of_birth, point, national_id = self.player_view.request_update_player_info(
+                player
             )
-            self.player_manager.update_player(
-                player_id, firstname, lastname, date_of_birth, point, national_id
-            )
+            self.player_manager.update_player(player_id, firstname, lastname, date_of_birth, point, national_id)
 
     def show_players(self):
         players = self.player_manager.list_players()
