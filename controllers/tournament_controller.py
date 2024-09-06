@@ -61,12 +61,12 @@ class TournamentController:
     def add_players_to_tournament(self, tournament_id):
         max_players: int = self.tournament_manager.get_max_players(tournament_id)
 
-        # Obtenir les joueurs restants et ceux déjà enregistrés
+        # Get the remaining players and those already registered
         player_data = self.player_manager.list_players()
         registered_players = self.tournament_manager.get_registered_players(tournament_id)
         remaining_players = [p for p in player_data if p.id not in {rp.id for rp in registered_players}]
 
-        # Afficher les joueurs disponibles et ceux déjà enregistrés
+        # Display available players and those already registered
         self.player_view.show_players(remaining_players, "Liste des joueurs disponibles.")
         self.player_view.show_players(
             registered_players, f"Joueurs inscrits au tournoi {len(registered_players)}/{max_players}"

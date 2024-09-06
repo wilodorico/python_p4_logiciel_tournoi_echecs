@@ -1,17 +1,22 @@
+from rich.console import Console
+from rich.prompt import Prompt
+
+
 class MainMenuView:
+    console = Console()
 
     def display_main_menu(self):
-        print("-----------------------------")
-        print("Menu principal : ")
-        print("-----------------------------")
-        print("1. Gestion joueur")
-        print("2. Gestion tournoi")
-        print("3. Quitter")
-        print()
+        self.console.print("======================", style="deep_sky_blue1")
+        self.console.print("    Menu principal    ")
+        self.console.print("======================", style="deep_sky_blue1")
+        self.console.print("1. Gestion joueur")
+        self.console.print("2. Gestion tournoi")
+        self.console.print("3. Quitter")
+        self.console.print()
 
     def request_user_choice(self) -> int:
         while True:
-            choice = input("Veuillez entrer un choix (1, 2 ou 3): ")
+            choice = Prompt.ask("Veuillez entrer un choix", choices=["1", "2", "3"])
             print()
             try:
                 choice_number: int = int(choice)

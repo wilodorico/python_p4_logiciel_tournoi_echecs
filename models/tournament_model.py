@@ -159,7 +159,6 @@ class TournamentManager:
         if number_of_current_round == number_of_round:
             last_round = tournament["rounds"][-1]
             if last_round["status"] == RoundStatus.FINISHED.value:
-                print("Tournoi terminé!")
                 return True
         return False
 

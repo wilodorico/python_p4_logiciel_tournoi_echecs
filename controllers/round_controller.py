@@ -40,7 +40,7 @@ class RoundController:
 
     def start_round(self, tournament_id):
         if self.tournament_manager.check_tournament_finished(tournament_id):
-            print("Tournoi terminé.")
+            print("Tournoi terminé !")
             self.tournament_manager.display_final_rankings(tournament_id)
             return
 
