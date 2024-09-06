@@ -9,6 +9,8 @@ from rich.console import Console
 from rich.prompt import Prompt, IntPrompt
 from rich.table import Table
 
+from utils.rich_component import alert_message
+
 
 class PlayerView:
     console = Console()
@@ -30,11 +32,9 @@ class PlayerView:
             if choice in [1, 2, 3, 4]:
                 return choice
             else:
-                print("Choix invalide : Veuillez entrer 1, 2, 3 ou 4")
-                print()
+                alert_message("Choix invalide : Veuillez entrer 1, 2, 3 ou 4", "red")
         except ValueError:
-            print("Veuillez entrer un nombre valide. (1, 2, 3 ou 4)")
-            print()
+            alert_message("Veuillez entrer un nombre valide. (1, 2, 3 ou 4)", "red")
             return self.display_player_menu()
 
     def request_player_info(self):
@@ -48,13 +48,11 @@ class PlayerView:
 
     def request_id_player(self):
         player_id: str = Prompt.ask("Veuillez entrer l'identifiant du joueur").strip()
-        print()
         try:
             player_id: int = int(player_id)
             return player_id
         except ValueError:
-            print("Erreur: Veuillez entrer un nombre !")
-            print()
+            alert_message("Veuillez entrer un nombre !", "red")
             return self.request_id_player()
 
     def request_update_player_info(self, player):
@@ -73,7 +71,7 @@ class PlayerView:
 
     def show_players(self, players: list[Player], message: str):
         if not players:
-            self.console.print("Aucun joueur Enregistré !", style="sky_blue2")
+            alert_message("Aucun joueur Enregistré !", "sky_blue2")
             return
 
         table = Table(title=message, show_lines=True)
