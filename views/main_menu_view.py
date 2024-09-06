@@ -16,9 +16,9 @@ class MainMenuView:
 
     def request_user_choice(self) -> int:
         while True:
-            choice = Prompt.ask("Veuillez entrer un choix", choices=["1", "2", "3"])
-            print()
             try:
+                choice = Prompt.ask("Veuillez entrer un choix", choices=["1", "2", "3"])
+                print()
                 choice_number: int = int(choice)
                 if choice_number in [1, 2, 3]:
                     return choice_number
