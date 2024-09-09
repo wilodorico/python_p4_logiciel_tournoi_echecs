@@ -57,14 +57,23 @@ class PlayerView:
 
     def request_update_player_info(self, player):
         self.console.print("Laisser le champ vide si vous ne voulez pas le changer.", style="sky_blue2")
-        firstname = input(f"Mettre à jour son prénom ({player.firstname}): ").strip() or player.firstname
-        lastname = input(f"Mettre à jour son nom ({player.lastname}): ").strip() or player.lastname
-        date_of_birth_str = (
-            input(f"Mettre à jour sa date de naissance ({player.date_of_birth}): ").strip() or player.date_of_birth
+        firstname = (
+            self.console.input(f"Mettre à jour son prénom [sky_blue2]({player.firstname}): ").strip()
+            or player.firstname
         )
-        point_str = input(f"Mettre à jour ses points ({player.point}): ").strip() or player.point
+        lastname = (
+            self.console.input(f"Mettre à jour son nom [sky_blue2]({player.lastname}): ").strip() or player.lastname
+        )
+        date_of_birth_str = (
+            self.console.input(f"Mettre à jour sa date de naissance [sky_blue2]({player.date_of_birth}): ").strip()
+            or player.date_of_birth
+        )
+        point_str = (
+            self.console.input(f"Mettre à jour ses points [sky_blue2]({player.point}): ").strip() or player.point
+        )
         national_id = (
-            input(f"Mettre à jour son identifiant nationnal ({player.national_id}): ").strip() or player.national_id
+            self.console.input(f"Mettre à jour son identifiant nationnal [sky_blue2]({player.national_id}): ").strip()
+            or player.national_id
         )
 
         return firstname, lastname, date_of_birth_str, point_str, national_id

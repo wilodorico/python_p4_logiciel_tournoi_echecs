@@ -5,6 +5,7 @@ from tinydb import TinyDB
 
 from models.player_model import Player
 from models.round_model import Round, RoundStatus
+from utils.rich_component import alert_message
 
 
 class Tournament:
@@ -69,7 +70,7 @@ class TournamentManager:
 
         self.tournaments_table.insert(new_tournament.to_dict())
 
-        print(f"Tournoi '{new_tournament.name}' enregistré avec succès !")
+        alert_message(f"Tournoi '{new_tournament.name}' enregistré avec succès !", "green")
 
     def get_tournaments(self):
         tournaments = self.tournaments_table.all()

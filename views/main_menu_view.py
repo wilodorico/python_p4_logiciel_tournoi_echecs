@@ -13,7 +13,7 @@ class MainMenuView:
         self.console.print("1. Gestion joueur")
         self.console.print("2. Gestion tournoi")
         self.console.print("3. Quitter")
-        self.console.print()
+        self.console.print("======================", style="deep_sky_blue1")
 
     def request_user_choice(self) -> int:
         while True:
