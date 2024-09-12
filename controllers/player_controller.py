@@ -31,6 +31,8 @@ class PlayerController:
     def modify_player(self):
         self.show_players()
         player_id: int = self.player_view.request_id_player()
+        if player_id == 0:
+            return
         player = self.player_manager.get_player_by_id(player_id)
         if player:
             firstname, lastname, date_of_birth, point, national_id = self.player_view.request_update_player_info(

@@ -5,15 +5,15 @@ from rich.text import Text
 console = Console()
 
 
-def alert_message(message: str, color: str = "white"):
-    """Displays a stylised message in a Rich panel in a custom color.
+def alert_message(message: str, styling: str = "white"):
+    """Displays a stylised message in a Rich panel in a custom styling.
 
     Args:
         message (str): message to display.
-        color (str, optional): Color display. Defaults to "white".
+        styling (str, optional): styling display. Defaults to "white".
     """
 
     text = Text(message)
-    text.stylize(color)
+    text.stylize(styling)
     panel = Panel.fit(text)
     console.print(panel)
