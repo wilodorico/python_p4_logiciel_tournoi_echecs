@@ -1,5 +1,6 @@
 from rich.console import Console
 from rich.prompt import IntPrompt
+from rich.table import Table
 from utils.rich_component import alert_message
 
 
@@ -33,3 +34,38 @@ class ReportView:
         except ValueError:
             alert_message("Veuillez entrer un nombre !", "red")
             return self.request_tournament_id()
+
+    def display_all_matches_per_round_of_tournament(self, tournament):
+        rounds = tournament.get("rounds", [])
+
+        # For each round, create and display a table
+        for round_data in rounds:
+            round_name = round_data["name"]
+            matches = round_data["matches"]
+
+            # Create a table for the current round
+            table = Table(title=f"{round_name} - {round_data['status']}", title_style="bold magenta", show_lines=True)
+
+            # Add columns to the table
+            table.add_column("Match", justify="center", style="cyan")
+            table.add_column("Joueur 1", style="magenta")
+            table.add_column("Score 1", justify="center", style="green")
+            table.add_column("Joueur 2", style="magenta")
+            table.add_column("Score 2", justify="center", style="green")
+
+            # Fill in the table with the round's matches
+            for i, match in enumerate(matches):
+                player1_name = match[0][0]
+                score1 = match[0][1]
+                player2_name = match[1][0]
+                score2 = match[1][1]
+
+                table.add_row(f"Match {i + 1}", player1_name, str(score1), player2_name, str(score2))
+
+            # Display the round table
+            self.console.print(table)
+            round_date_end = round_data["end_at"] if round_data["end_at"] else "Toujours en cours..."
+            # Display the start and end dates of the round
+            self.console.print(f"Début : {round_data['start_at']}", style="yellow")
+            self.console.print(f"Fin : {round_date_end}", style="yellow")
+            self.console.print()
