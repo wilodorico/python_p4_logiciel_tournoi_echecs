@@ -20,9 +20,11 @@ class TournamentView:
         return name, location, description, date_start, date_end
 
     def display_tournament_info(self, tournament):
-        alert_message(
-            f"Tournoi {tournament['name']} du {tournament['date_start']} au {tournament['date_end']}", "deep_sky_blue1"
-        )
+        if tournament:
+            alert_message(
+                f"Tournoi: {tournament['name']} du {tournament['date_start']} au {tournament['date_end']}",
+                "deep_sky_blue1",
+            )
 
     def display_tournament_menu(self):
         self.console.print("=================================", style="deep_sky_blue1")

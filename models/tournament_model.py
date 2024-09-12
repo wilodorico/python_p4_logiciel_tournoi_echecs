@@ -86,21 +86,7 @@ class TournamentManager:
             alert_message(f"Aucun tournoi trouvé avec l'ID: {tournament_id}", "red")
             return
 
-        tournament_instance = Tournament(
-            tournament["name"],
-            tournament["location"],
-            tournament["description"],
-            tournament["date_start"],
-            tournament["date_end"],
-        )
-
-        tournament_instance.number_of_round = tournament["number_of_round"]
-        tournament_instance.number_of_current_round = tournament["number_of_current_round"]
-        tournament_instance.rounds = tournament["rounds"]
-        tournament_instance.players = tournament["players"]
-        tournament_instance.max_players = tournament["max_players"]
-
-        return tournament_instance
+        return tournament
 
     def get_last_tournament(self):
         tournament_data = self.tournaments_table.all()
