@@ -38,16 +38,16 @@ class TournamentView:
     def request_user_choice(self):
         while True:
             print()
-            choice = self.console.input("Veuillez entrer un choix [thistle3](1/2/3/4/5): ")
+            choice = self.console.input("Veuillez entrer un choix [thistle3][1/2/3/4/5]: ")
             print()
             try:
                 choice_number: int = int(choice)
                 if choice_number in [1, 2, 3, 4, 5]:
                     return choice_number
                 else:
-                    alert_message("Veuillez entrer un choix valide (1/2/3/4/5)", "red")
+                    alert_message("Veuillez entrer un choix valide [1/2/3/4/5]", "red")
             except ValueError:
-                alert_message("Veuillez entrer un choix valide (1/2/3/4/5)", "red")
+                alert_message("Veuillez entrer un choix valide [1/2/3/4/5]", "red")
 
     def display_tournaments(self, tournaments):
         if not tournaments:
@@ -78,20 +78,20 @@ class TournamentView:
         self.console.print("=================================", style="deep_sky_blue1")
         self.console.print("1. Inscrire les joueurs")
         self.console.print("2. Liste des joueurs inscrits")
-        self.console.print("3. Gérer les tours")
+        self.console.print("3. Gérer les Rounds")
         self.console.print("4. Retour au menu gestion tournoi")
         self.console.print("=================================", style="deep_sky_blue1")
 
     def request_tournament_management_choice(self):
         while True:
             print()
-            choice = self.console.input("Veuillez entrer un choix [thistle3](1/2/3/4): ")
+            choice = self.console.input("Veuillez entrer un choix [thistle3][1/2/3/4]: ")
             print()
             try:
                 choice_number: int = int(choice)
                 if choice_number in [1, 2, 3, 4]:
                     return choice_number
                 else:
-                    alert_message("Veuillez entrer un choix valide (1/2/3/4)", "red")
+                    alert_message("Veuillez entrer un choix valide [1/2/3/4]", "red")
             except ValueError:
-                alert_message("Veuillez entrer un nombre (1/2/3/4)", "red")
+                alert_message("Veuillez entrer un nombre [1/2/3/4]", "red")

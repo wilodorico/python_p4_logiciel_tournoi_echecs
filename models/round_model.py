@@ -6,6 +6,7 @@ from tinydb import TinyDB
 
 from models.player_model import Player
 from models.match_model import Match
+from utils.rich_component import alert_message
 
 
 class RoundStatus(Enum):
@@ -58,20 +59,22 @@ class RoundManager:
         if tournament["rounds"]:
             current_round = tournament["rounds"][-1]
         else:
-            return print("Aucun Round créé: Veuillez d'abord créer un Round")
+            return alert_message("Aucun Round créé: Veuillez d'abord créer un Round", "red")
 
         if current_round["status"] == RoundStatus.CREATED.value:
             current_round["status"] = RoundStatus.STARTED.value
             current_round["start_at"] = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
             self.tournaments_table.update(tournament, doc_ids=[tournament_id])
-            return print(f"{current_round['name']} démarrée avec succès !")
+            return alert_message(f"{current_round['name']} démarrée avec succès !", "green")
         else:
-            return print(f"{current_round['name']} déjà en cours")
+            return alert_message(
+                f"{current_round['name']} en cours ! Terminez le Round en saisissant les scores.", "deep_sky_blue1"
+            )
 
     def create_round(self, tournament_id):
         tournament = self.tournaments_table.get(doc_id=tournament_id)
         if not tournament:
-            print(f"Aucun tournoi trouvé avec l'ID: {tournament_id}")
+            alert_message(f"Aucun tournoi trouvé avec l'ID: {tournament_id}", "red")
             return
 
         total_tournament_rounds = len(tournament["rounds"])
@@ -81,7 +84,7 @@ class RoundManager:
                 tournament["rounds"][-1]["status"] == RoundStatus.CREATED.value
                 or tournament["rounds"][-1]["status"] == RoundStatus.STARTED.value
             ):
-                return print(f"Round n°{total_tournament_rounds} déjà créée ou en cours")
+                return
 
         total_tournament_rounds += 1
         tournament["number_of_current_round"] = total_tournament_rounds
@@ -89,19 +92,21 @@ class RoundManager:
         tournament["rounds"].append(new_round.to_dict())
         self.tournaments_table.update(tournament, doc_ids=[tournament_id])
 
-        print(f"{new_round.name} enregistré avec succès !")
+        alert_message(f"{new_round.name} enregistré avec succès !", "green")
 
     def generate_matches(self, tournament_id):
         tournament = self.tournaments_table.get(doc_id=tournament_id)
         if not tournament:
-            print(f"Aucun tournoi trouvé avec l'ID: {tournament_id}")
+            alert_message(f"Aucun tournoi trouvé avec l'ID: {tournament_id}", "red")
             return
 
         players: List[Player] = tournament.get("players", [])
         max_players = tournament.get("max_players")
 
         if len(players) < max_players:
-            print(f"Veuillez enregistrer les {max_players} joueurs avant de créer des matchs")
+            alert_message(
+                f"Veuillez enregistrer les {max_players} joueurs avant de créer des matchs", "deep_sky_blue1"
+            )
             return
 
         current_round_number = len(tournament["rounds"])
@@ -113,14 +118,14 @@ class RoundManager:
             ):
                 self.matches = self.create_random_matches(players)
             else:
-                return print("Les matchs sont déjà générés, terminez le Round en saisissant les scores")
+                return
         else:
             self.matches = self.create_matches_based_on_ranking(tournament, players)
 
         tournament["rounds"][-1]["matches"] = self.matches
         self.tournaments_table.update(tournament, doc_ids=[tournament_id])
 
-        print("Les matchs ont été générés avec succès !")
+        alert_message("Les matchs ont été générés avec succès !", "green")
 
     def create_random_matches(self, players: List[Player]):
         matches = []
@@ -138,7 +143,10 @@ class RoundManager:
             matches.append(match.players)
 
         if len(players) % 2 != 0:
-            print(f"Le joueur {players[-1]['firstname']} {players[-1]['lastname']} n'a pas d'adversaire pour ce round")
+            alert_message(
+                f"Le joueur {players[-1]['firstname']} {players[-1]['lastname']} n'a pas d'adversaire pour ce round",
+                "red",
+            )
 
         return matches
 
@@ -186,7 +194,7 @@ class RoundManager:
         return matches
 
     def get_already_played_pairs(self, tournament):
-        """Returns a set of pairs of players who have already met."""
+        """Returns a set of pairs of players who have already meet."""
         already_played = set()
         for round_data in tournament["rounds"]:
             for match in round_data["matches"]:
@@ -199,10 +207,10 @@ class RoundManager:
     def get_current_round_matches(self, tournament_id):
         tournament = self.tournaments_table.get(doc_id=tournament_id)
         if not tournament:
-            print(f"Aucun tournoi trouvé avec l'ID: {tournament_id}")
+            alert_message(f"Aucun tournoi trouvé avec l'ID: {tournament_id}", "red")
             return
         if not tournament["rounds"]:
-            print("Aucun Round créé: Veuillez d'abord créer un Round")
+            alert_message("Aucun Round créé: Veuillez d'abord créer un Round", "red")
             return
 
         current_round_number: int = tournament["number_of_current_round"]
@@ -214,18 +222,20 @@ class RoundManager:
         """Assigns match scores for the current round according to the user's choices."""
         tournament = self.tournaments_table.get(doc_id=tournament_id)
         if not tournament:
-            print(f"Aucun tournoi trouvé avec l'ID: {tournament_id}")
+            alert_message(f"Aucun tournoi trouvé avec l'ID: {tournament_id}", "red")
             return
 
         if not tournament["rounds"]:
-            print("Aucun Round créé: Veuillez d'abord créer un Round")
+            alert_message("Aucun Round créé: Veuillez d'abord créer un Round", "deep_sky_blue1")
             return
 
         current_round = tournament["rounds"][-1]
 
         if current_round["status"] != RoundStatus.STARTED.value:
-            print(
-                f"Les scores ne peuvent être enregistrés que pour un round en cours. {current_round['name']} n'est pas en cours."
+            alert_message(
+                f"Les scores ne peuvent être saisis que pour un round en cours. "
+                f"{current_round['name']} n'est pas en cours.",
+                "deep_sky_blue1",
             )
             return
 
@@ -247,19 +257,19 @@ class RoundManager:
         current_round["end_at"] = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
         self.tournaments_table.update(tournament, doc_ids=[tournament_id])
 
-        print(f"Scores enregistrés pour {current_round['name']} et le round est maintenant terminé.")
+        alert_message(f"Scores enregistrés pour {current_round['name']} et le round est maintenant terminé.", "green")
 
     def set_match_result(self, match, score1: float, score2: float):
         """Assigns scores to players in a match."""
         match[0][1] = score1
         match[1][1] = score2
-        print(f"Scores mis à jour : {match[0][0]} ({score1}) - {match[1][0]} ({score2})")
+        self.console.print(f"Scores mis à jour : {match[0][0]} ({score1}) - {match[1][0]} ({score2})")
 
     def update_player_scores(self, tournament_id):
         """Updates players' total points based on match results."""
         tournament = self.tournaments_table.get(doc_id=tournament_id)
         if not tournament:
-            print(f"Aucun tournoi trouvé avec l'ID: {tournament_id}")
+            alert_message(f"Aucun tournoi trouvé avec l'ID: {tournament_id}", "red")
             return
 
         # Initialize or reset player scores
@@ -303,4 +313,4 @@ class RoundManager:
 
         # Save updated data in the database
         self.tournaments_table.update(tournament, doc_ids=[tournament_id])
-        print("Scores des joueurs mis à jour avec succès.")
+        alert_message("Les scores des joueurs ont été mis à jour avec succès.", "green")
