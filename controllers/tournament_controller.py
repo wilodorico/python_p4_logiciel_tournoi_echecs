@@ -1,11 +1,14 @@
 from controllers.round_controller import RoundController
 from models.player_model import PlayerManager
 from models.tournament_model import TournamentManager
+from utils.rich_component import alert_message
 from views.player_view import PlayerView
 from views.tournament_view import TournamentView
+from rich.console import Console
 
 
 class TournamentController:
+    console = Console()
 
     def __init__(self):
         self.tournament_view = TournamentView()
@@ -73,25 +76,24 @@ class TournamentController:
         )
 
         while len(registered_players) < max_players:
-            print("Entrez 0 pour quitter.")
+            self.console.print("Entrez 0 pour quitter.")
             player_id = self.player_view.request_id_player()
             if player_id == 0:
                 break
 
             player = self.player_manager.get_player_by_id(player_id)
             if not player:
-                print("ID invalide impossible de trouver le joueur.")
                 continue
 
             response = self.tournament_manager.add_player_to_tournament(tournament_id, player)
 
             if response["player_exist"]:
-                print(response["message"])
+                alert_message(response["message"], "red")
             else:
                 registered_players.append(player)
                 remaining_players = [p for p in remaining_players if p.id != player_id]
 
-                print(response["message"])
+                alert_message(response["message"], "green")
 
                 self.player_view.show_players(remaining_players, "Liste des joueurs disponibles.")
                 self.player_view.show_players(
@@ -99,7 +101,7 @@ class TournamentController:
                 )
 
         if len(registered_players) >= max_players:
-            print("Le nombre maximal de joueurs a été atteint pour ce tournoi.")
+            self.console.print("Le nombre maximal de joueurs a été atteint pour ce tournoi.", style="deep_sky_blue1")
 
     def show_players_of_tournament(self, tournament_id):
         players = self.tournament_manager.get_registered_players(tournament_id)

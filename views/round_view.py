@@ -58,10 +58,10 @@ class RoundView:
         player1_name = match[0][0]
         player2_name = match[1][0]
         self.console.print(
-            f"Résultat du match {match_number}: [steel_blue1]{player1_name} "
+            f"Résultat du match {match_number}: [magenta]{player1_name} "
             f"[spring_green1]vs [light_steel_blue]{player2_name}"
         )
-        self.console.print(f"1. Victoire de [steel_blue1]{player1_name}")
+        self.console.print(f"1. Victoire de [magenta]{player1_name}")
         self.console.print(f"2. Victoire de [light_steel_blue]{player2_name}")
         self.console.print("3. Égalité")
 

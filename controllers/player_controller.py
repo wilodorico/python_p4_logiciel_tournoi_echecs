@@ -1,9 +1,11 @@
 from models.player_model import PlayerManager
 from views.main_menu_view import MainMenuView
 from views.player_view import PlayerView
+from rich.console import Console
 
 
 class PlayerController:
+    console = Console()
 
     def __init__(self):
         self.player_view = PlayerView()
@@ -30,6 +32,7 @@ class PlayerController:
 
     def modify_player(self):
         self.show_players()
+        self.console.print("Entrez 0 pour quitter.")
         player_id: int = self.player_view.request_id_player()
         if player_id == 0:
             return

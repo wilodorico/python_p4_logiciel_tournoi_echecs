@@ -7,6 +7,7 @@ from tinydb import TinyDB
 from models.player_model import Player
 from models.match_model import Match
 from utils.rich_component import alert_message
+from rich.console import Console
 
 
 class RoundStatus(Enum):
@@ -49,6 +50,8 @@ class Round:
 
 
 class RoundManager:
+    console = Console()
+
     def __init__(self, db_path="data/tournaments/tournaments.json"):
         self.db = TinyDB(db_path, indent=4, ensure_ascii=False, encoding="utf-8")
         self.tournaments_table = self.db.table("tournaments")
@@ -215,6 +218,9 @@ class RoundManager:
 
         current_round_number: int = tournament["number_of_current_round"]
         current_round = tournament["rounds"][current_round_number - 1]
+        if current_round["status"] == RoundStatus.FINISHED.value:
+            alert_message("Le Round est terminé. Veuillez démarrer un nouveau Round.", "deep_sky_blue1")
+            return
 
         return current_round.get("matches", [])
 

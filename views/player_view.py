@@ -6,7 +6,7 @@ from utils.input_validation import (
     get_valid_national_id_format,
 )
 from rich.console import Console
-from rich.prompt import Prompt, IntPrompt
+from rich.prompt import IntPrompt
 from rich.table import Table
 
 from utils.rich_component import alert_message
@@ -48,9 +48,7 @@ class PlayerView:
 
     def request_id_player(self):
         try:
-            player_id: int = IntPrompt.ask(
-                "Veuillez entrer l'identifiant du joueur ou [deep_sky_blue2]entrez 0 pour quitter"
-            )
+            player_id: int = IntPrompt.ask("Veuillez entrer l'identifiant du joueur")
             return player_id
         except ValueError:
             alert_message("Veuillez entrer un nombre !", "red")
