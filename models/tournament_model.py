@@ -6,6 +6,8 @@ from tinydb import TinyDB
 from models.player_model import Player
 from models.round_model import Round, RoundStatus
 from utils.rich_component import alert_message
+from rich.console import Console
+from rich.table import Table
 
 
 class Tournament:
@@ -48,6 +50,8 @@ class Tournament:
 
 
 class TournamentManager:
+    console = Console()
+
     def __init__(self, db_path="data/tournaments/tournaments.json"):
         self.db = TinyDB(db_path, indent=4, ensure_ascii=False, encoding="utf-8")
         self.tournaments_table = self.db.table("tournaments")
@@ -79,7 +83,8 @@ class TournamentManager:
     def get_tournament_by_id(self, tournament_id):
         tournament = self.tournaments_table.get(doc_id=tournament_id)
         if not tournament:
-            return None
+            alert_message(f"Aucun tournoi trouvé avec l'ID: {tournament_id}", "red")
+            return
 
         tournament_instance = Tournament(
             tournament["name"],
@@ -100,12 +105,15 @@ class TournamentManager:
     def get_last_tournament(self):
         tournament_data = self.tournaments_table.all()
         if not tournament_data:
-            return None
+            return alert_message("Aucun tournoi enregistré", "red")
         last_tournament = tournament_data[-1]
         return last_tournament
 
     def get_registered_players(self, tournament_id):
         tournament = self.tournaments_table.get(doc_id=tournament_id)
+        if not tournament:
+            alert_message(f"Aucun tournoi trouvé avec l'ID: {tournament_id}", "red")
+            return
         registered_players = tournament["players"]
         players = []
 
@@ -125,7 +133,8 @@ class TournamentManager:
     def add_player_to_tournament(self, tournament_id, player: Player):
         tournament = self.tournaments_table.get(doc_id=tournament_id)
         if not tournament:
-            return None
+            alert_message(f"Aucun tournoi trouvé avec l'ID: {tournament_id}", "red")
+            return
 
         for player_tournament in tournament["players"]:
             if player_tournament["id"] == player.id:
@@ -145,33 +154,42 @@ class TournamentManager:
     def get_max_players(self, tournament_id):
         tournament = self.tournaments_table.get(doc_id=tournament_id)
         if not tournament:
-            return print("Aucun tournoi trouvé")
+            alert_message(f"Aucun tournoi trouvé avec l'ID: {tournament_id}", "red")
+            return
         return tournament["max_players"]
 
-    def check_tournament_finished(self, tournament_id):
-        """Vérifie si le tournoi est terminé et affiche le classement final."""
+    def is_tournament_finished(self, tournament_id) -> bool:
+        """Returns True if the tournament is finished, otherwise False."""
         tournament = self.tournaments_table.get(doc_id=tournament_id)
         if not tournament:
-            return print("Aucun tournoi trouvé")
+            alert_message(f"Aucun tournoi trouvé avec l'ID: {tournament_id}", "red")
+            return False
         number_of_round = tournament["number_of_round"]
         number_of_current_round = len(tournament["rounds"])
+        is_total_rounds_complete = number_of_current_round == number_of_round
 
-        # Vérifier si le dernier round est terminé et que le nombre de rounds créés est égal au nombre total de rounds
-        if number_of_current_round == number_of_round:
+        if is_total_rounds_complete:
             last_round = tournament["rounds"][-1]
             if last_round["status"] == RoundStatus.FINISHED.value:
                 return True
         return False
 
     def display_final_rankings(self, tournament_id):
-        """Affiche le classement final des joueurs basé sur leurs points."""
+        """Displays the final ranking of players based on their points."""
         tournament = self.tournaments_table.get(doc_id=tournament_id)
         if not tournament:
-            return print("Aucun tournoi trouvé")
+            alert_message(f"Aucun tournoi trouvé avec l'ID: {tournament_id}", "red")
+            return
         players = tournament.get("players", [])
         players.sort(key=lambda player: player["point"], reverse=True)
 
-        print("\n=== Classement Final ===")
+        table = Table(title="=== Classement Final ===", show_lines=True)
+        table.add_column("Rang", justify="right", style="cyan", no_wrap=True)
+        table.add_column("Prénom", style="magenta")
+        table.add_column("Nom", style="magenta")
+        table.add_column("Points", justify="right", style="green")
+
         for rank, player in enumerate(players, start=1):
-            print(f"{rank}. {player['firstname']} {player['lastname']} - {player['point']} points")
-        print("=========================\n")
+            table.add_row(str(rank), player["firstname"], player["lastname"], str(player["point"]))
+
+        self.console.print(table)

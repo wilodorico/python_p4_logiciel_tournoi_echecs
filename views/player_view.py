@@ -16,14 +16,14 @@ class PlayerView:
     console = Console()
 
     def display_player_menu(self):
-        self.console.print("=============================", style="slate_blue3")
+        self.console.print("============================", style="deep_sky_blue1")
         self.console.print("         Menu joueur")
-        self.console.print("=============================", style="slate_blue3")
+        self.console.print("============================", style="deep_sky_blue1")
         self.console.print("1. Liste des joueurs")
         self.console.print("2. Ajouter un joueur")
         self.console.print("3. Modifier un joueur")
         self.console.print("4. Retour au menu principal")
-        self.console.print()
+        self.console.print("============================", style="deep_sky_blue1")
 
     def request_user_choice(self):
         try:
@@ -32,9 +32,9 @@ class PlayerView:
             if choice in [1, 2, 3, 4]:
                 return choice
             else:
-                alert_message("Choix invalide : Veuillez entrer 1, 2, 3 ou 4", "red")
+                alert_message("Veuillez entrer un choix valide [1/2/3/4]", "red")
         except ValueError:
-            alert_message("Veuillez entrer un nombre valide. (1, 2, 3 ou 4)", "red")
+            alert_message("Veuillez entrer un nombre valide [1/2/3/4]", "red")
             return self.display_player_menu()
 
     def request_player_info(self):
@@ -47,16 +47,17 @@ class PlayerView:
         return firstname, lastname, date_of_birth, point, national_id
 
     def request_id_player(self):
-        player_id: str = Prompt.ask("Veuillez entrer l'identifiant du joueur").strip()
         try:
-            player_id: int = int(player_id)
+            player_id: int = IntPrompt.ask(
+                "Veuillez entrer l'identifiant du joueur ou [deep_sky_blue2]entrez 0 pour quitter"
+            )
             return player_id
         except ValueError:
             alert_message("Veuillez entrer un nombre !", "red")
             return self.request_id_player()
 
     def request_update_player_info(self, player):
-        self.console.print("Laisser le champ vide si vous ne voulez pas le changer.", style="sky_blue2")
+        self.console.print("Laissez le champ vide si vous ne souhaitez pas le changer.", style="deep_sky_blue1")
         firstname = (
             self.console.input(f"Mettre à jour son prénom [sky_blue2]({player.firstname}): ").strip()
             or player.firstname
@@ -80,7 +81,7 @@ class PlayerView:
 
     def show_players(self, players: list[Player], message: str):
         if not players:
-            alert_message("Aucun joueur Enregistré !", "sky_blue2")
+            alert_message("Aucun joueur Enregistré !", "deep_sky_blue1")
             return
 
         table = Table(title=message, show_lines=True)
