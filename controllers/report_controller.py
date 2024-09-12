@@ -42,13 +42,21 @@ class ReportController:
         self.tournament_view.display_tournaments(tournaments)
 
     def tournament_name_and_dates(self):
+        tournament = self.get_tournament_by_id()
+        self.tournament_view.display_tournament_info(tournament)
+
+    def get_players_of_tournament(self):
+        tournament = self.get_tournament_by_id()
+        players = self.tournament_manager.get_registered_players(tournament.doc_id)
+        self.player_view.show_players(players, f"Liste des joueurs inscrits au tournoi {tournament['name']}")
+
+    def get_all_matches_per_round_of_tournament(self):
+        tournament = self.get_tournament_by_id()
+        self.tournament_view.display_tournament_info(tournament)
+        self.report_view.display_all_matches_per_round_of_tournament(tournament)
+
+    def get_tournament_by_id(self):
         self.get_all_tournaments()
         choice: int = self.report_view.request_tournament_id()
         tournament = self.tournament_manager.get_tournament_by_id(choice)
-        self.tournament_view.display_tournament_info(tournament)
-
-    def get_all_players_of_tournament(self):
-        print("all players of tournament")
-
-    def get_all_matches_per_round_of_tournament(self):
-        print("all matches per round of tournament")
+        return tournament
