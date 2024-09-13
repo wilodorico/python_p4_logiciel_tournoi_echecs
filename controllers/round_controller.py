@@ -22,11 +22,11 @@ class RoundController:
 
     def run(self, tournament_id):
         current_tournament = self.tournament_manager.get_tournament_by_id(tournament_id)
-        current_round_number = current_tournament.number_of_current_round + 1
+        current_round_number = current_tournament["number_of_current_round"] + 1
 
         alert_message(
-            f"Tournoi {current_tournament.name} du {current_tournament.date_start} "
-            f"au {current_tournament.date_end}",
+            f"Tournoi {current_tournament["name"]} du {current_tournament["date_start"]} "
+            f"au {current_tournament["date_end"]}",
             "deep_sky_blue1",
         )
 
