@@ -30,12 +30,17 @@ class TournamentController:
                 case 3:
                     self.managing_last_tournament()
                 case 4:
-                    # self.managing_tournament(tournament_id)
-                    pass
-                case 5:
                     break
 
     def create_tournament(self):
+        tournaments = self.tournament_manager.get_tournaments()
+        if tournaments:
+            last_tournament = tournaments[-1]
+            if not self.tournament_manager.is_tournament_finished(last_tournament.doc_id):
+                alert_message(
+                    "Vous ne pouvez pas créer un nouveau tournoi car le dernier tournoi n'est pas terminé !", "red"
+                )
+                return
         name, location, description, date_start, date_end = self.tournament_view.get_tournament_info()
         self.tournament_manager.create_tournament(name, location, description, date_start, date_end)
 

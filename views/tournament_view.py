@@ -33,23 +33,22 @@ class TournamentView:
         self.console.print("1. Liste des tournois")
         self.console.print("2. Créer un tournoi")
         self.console.print("3. Gérer le dernier tournoi créé")
-        self.console.print("4. Gérer un tournoi")
-        self.console.print("5. Retour au menu principal")
+        self.console.print("4. Retour au menu principal")
         self.console.print("=================================", style="deep_sky_blue1")
 
     def request_user_choice(self):
         while True:
             print()
-            choice = self.console.input("Veuillez entrer un choix [thistle3][1/2/3/4/5]: ")
+            choice = self.console.input("Veuillez entrer un choix [thistle3][1/2/3/4]: ")
             print()
             try:
                 choice_number: int = int(choice)
-                if choice_number in [1, 2, 3, 4, 5]:
+                if choice_number in [1, 2, 3, 4]:
                     return choice_number
                 else:
-                    alert_message("Veuillez entrer un choix valide [1/2/3/4/5]", "red")
+                    alert_message("Veuillez entrer un choix valide [1/2/3/4]", "red")
             except ValueError:
-                alert_message("Veuillez entrer un choix valide [1/2/3/4/5]", "red")
+                alert_message("Veuillez entrer un choix valide [1/2/3/4]", "red")
 
     def display_tournaments(self, tournaments):
         if not tournaments:
