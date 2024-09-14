@@ -1,21 +1,37 @@
-from utils.input_validation import get_non_empty_input, get_valid_date_format
+from utils.input_validation import InputValidator
 from rich.console import Console
 from rich.table import Table
 from utils.rich_component import alert_message
 
 
 class TournamentView:
-    console = Console()
+    def __init__(self):
+        self.console = Console()
+        self.input_validator = InputValidator()
 
     def get_tournament_info(self):
+        def prompt_with_retry(validate_func, prompt_text):
+            """Helper function to prompt for input and retry until a valid value is entered."""
+            while True:
+                try:
+                    return validate_func(input(prompt_text))
+                except ValueError as e:
+                    alert_message(e.args[0], "red")
+
         print()
         self.console.print("Renseignez les informations du tournoi.", style="deep_sky_blue1")
         print()
-        name = get_non_empty_input("Veuillez entrer le nom : ")
-        location = get_non_empty_input("Veuillez entrer le lieu : ")
-        description = get_non_empty_input("Veuillez entrer la description : ")
-        date_start = get_valid_date_format("Veuillez saisir la date de début : ")
-        date_end = get_valid_date_format("Veuillez saisir la date de fin : ")
+        name = prompt_with_retry(self.input_validator.validate_non_empty_string, "Veuillez entrer le nom : ")
+        location = prompt_with_retry(self.input_validator.validate_non_empty_string, "Veuillez entrer le lieu : ")
+        description = prompt_with_retry(
+            self.input_validator.validate_non_empty_string, "Veuillez entrer la description : "
+        )
+        date_start = prompt_with_retry(
+            self.input_validator.validate_date_format, "Veuillez saisir la date de début (01-01-2021) : "
+        )
+        date_end = prompt_with_retry(
+            self.input_validator.validate_date_format, "Veuillez saisir la date de fin (01-01-2021) : "
+        )
 
         return name, location, description, date_start, date_end
 
