@@ -5,7 +5,21 @@ from utils.rich_component import alert_message
 
 
 class ReportView:
-    console = Console()
+    """
+    The ReportView class handles the display of various tournament and player reports to the user.
+
+    Attributes:
+        console (Console): A Rich Console object for displaying styled output in the terminal.
+
+    Methods:
+        display_reports_menu(): Displays the menu for generating various reports.
+        request_user_choice() -> int: Prompts the user to select an option from the reports menu.
+        request_tournament_id(): Prompts the user to enter a tournament ID for generating a report.
+        display_all_matches_per_round_of_tournament(tournament): Displays all matches and rounds of a given tournament.
+    """
+
+    def __init__(self):
+        self.console = Console()
 
     def display_reports_menu(self):
         self.console.print("=================================================", style="deep_sky_blue1")
@@ -64,8 +78,9 @@ class ReportView:
 
             # Display the round table
             self.console.print(table)
-            round_date_end = round_data["end_at"] if round_data["end_at"] else "Toujours en cours..."
+
             # Display the start and end dates of the round
+            round_date_end = round_data["end_at"] if round_data["end_at"] else "Toujours en cours..."
             self.console.print(f"Début : {round_data['start_at']}", style="yellow")
             self.console.print(f"Fin : {round_date_end}", style="yellow")
             self.console.print()

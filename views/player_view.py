@@ -8,6 +8,22 @@ from utils.rich_component import alert_message
 
 
 class PlayerView:
+    """
+    The PlayerView class is responsible for displaying and interacting with user input related to player management.
+
+    Attributes:
+        console (Console): A Rich Console object for printing styled messages.
+        input_validator (InputValidator): An object for validating user input.
+
+    Methods:
+        display_player_menu(): Displays the player management menu.
+        request_user_choice(): Prompts the user to choose an option from the player menu.
+        request_player_info(): Prompts the user to enter player information and validates the input.
+        request_id_player(): Prompts the user to enter a player ID.
+        request_update_player_info(player): Prompts the user to update an existing player's information.
+        show_players(players: list[Player], message: str): Displays a list of players in a formatted table.
+    """
+
     def __init__(self):
         self.console = Console()
         self.input_validator = InputValidator()

@@ -4,7 +4,22 @@ from utils.rich_component import alert_message
 
 
 class RoundView:
-    console = Console()
+    """
+    The RoundView class is responsible for displaying and interacting with
+    the user regarding round managementin the tournament.
+
+    Attributes:
+        console (Console): A Rich Console object for displaying styled output in the terminal.
+
+    Methods:
+        display_main_menu(round_number: int): Displays the main menu for round management.
+        request_user_choice() -> int: Prompts the user to select an option from the round management menu.
+        display_matches(matches): Displays a list of matches in a formatted table.
+        prompt_for_match_result(match, match_number: int) -> int: Prompts the user to enter the result of a match.
+    """
+
+    def __init__(self):
+        self.console = Console()
 
     def display_main_menu(self, round_number: int):
         self.console.print("=================================", style="deep_sky_blue1")
@@ -30,27 +45,24 @@ class RoundView:
                 alert_message("Veuillez entrer un nombre [1/2/3/4]", "red")
 
     def display_matches(self, matches):
-        # Créer un tableau avec Rich
         table = Table(title="Liste des matchs", show_lines=True)
 
-        # Ajouter les colonnes au tableau
         table.add_column("Match", justify="center", style="cyan", no_wrap=True)
         table.add_column("Joueur 1", style="magenta")
         table.add_column("Score 1", justify="center", style="green")
         table.add_column("Joueur 2", style="magenta")
         table.add_column("Score 2", justify="center", style="green")
 
-        # Remplir le tableau avec les matchs
+        # Fill in the table with the matches
         for i, match in enumerate(matches):
             player1 = match[0][0]
             score1 = match[0][1]
             player2 = match[1][0]
             score2 = match[1][1]
 
-            # Ajouter une ligne au tableau
+            # Add a row to the table
             table.add_row(f"Match {i + 1}", player1, str(score1), player2, str(score2))
 
-        # Afficher le tableau dans la console
         self.console.print(table)
 
     def prompt_for_match_result(self, match, match_number: int):

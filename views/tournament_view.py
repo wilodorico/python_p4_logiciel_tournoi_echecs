@@ -5,6 +5,24 @@ from utils.rich_component import alert_message
 
 
 class TournamentView:
+    """
+    The TournamentView class handles the display and interaction related to tournament management.
+
+    Attributes:
+        console (Console): A Rich Console object for displaying styled output in the terminal.
+        input_validator (InputValidator): An object for validating user input.
+
+    Methods:
+        get_tournament_info(): Prompts the user to enter tournament information and validates the input.
+        display_tournament_info(tournament): Displays details of a specific tournament.
+        display_tournament_menu(): Displays the main tournament management menu.
+        request_user_choice(): Prompts the user to select an option from the tournament menu.
+        display_tournaments(tournaments): Displays a list of all tournaments in a formatted table.
+        display_tournament_management_menu(): Displays the tournament management submenu.
+        request_tournament_management_choice(): Prompts the user to select an option from
+                                                the tournament management submenu.
+    """
+
     def __init__(self):
         self.console = Console()
         self.input_validator = InputValidator()
