@@ -11,6 +11,27 @@ from rich.table import Table
 
 
 class Tournament:
+    """
+    Represents a tournament with rounds and players.
+
+    Attributes:
+        name (str): The name of the tournament.
+        location (str): The location where the tournament takes place.
+        description (str): A brief description of the tournament.
+        date_start (datetime): The start date of the tournament.
+        date_end (datetime): The end date of the tournament.
+        number_of_round (int): The total number of rounds in the tournament, default is 4.
+        number_of_current_round (int): The current round number in progress, starting from 0.
+        rounds (List[Round]): A list of rounds that belong to the tournament.
+        players (List[Player]): A list of players participating in the tournament.
+        max_players (int): The maximum number of players allowed in the tournament,
+                           default is twice the number of rounds.
+
+    Methods:
+        __str__(): Returns a string representation of the tournament.
+        to_dict(): Converts the tournament instance into a dictionary for serialization or storage.
+    """
+
     def __init__(
         self,
         name: str,
@@ -50,11 +71,32 @@ class Tournament:
 
 
 class TournamentManager:
-    console = Console()
+    """
+    The TournamentManager class handles the creation, retrieval, and management of tournaments,
+    as well as player management within tournaments.
+
+    Attributes:
+        db (TinyDB): The database connection to store and retrieve tournament data.
+        tournaments_table (Table): The specific table within the TinyDB where tournament data is stored.
+        console (Console): A Rich Console object for printing styled messages in the terminal.
+
+    Methods:
+        create_tournament(name, location, description, date_start, date_end): Creates and stores a new tournament in
+                                                                              the database.
+        get_tournaments(): Retrieves and returns a list of all tournaments from the database.
+        get_tournament_by_id(tournament_id): Retrieves a specific tournament by its ID.
+        get_last_tournament(): Retrieves the most recently created tournament.
+        get_registered_players(tournament_id): Retrieves a list of players registered for a given tournament.
+        add_player_to_tournament(tournament_id, player): Adds a player to a tournament.
+        get_max_players(tournament_id): Retrieves the maximum number of players allowed in the tournament.
+        is_tournament_finished(tournament_id) -> bool: Checks if the tournament has been completed.
+        display_final_rankings(tournament_id): Displays the final player rankings based on tournament performance.
+    """
 
     def __init__(self, db_path="data/tournaments/tournaments.json"):
         self.db = TinyDB(db_path, indent=4, ensure_ascii=False, encoding="utf-8")
         self.tournaments_table = self.db.table("tournaments")
+        self.console = Console()
 
     def create_tournament(
         self,
