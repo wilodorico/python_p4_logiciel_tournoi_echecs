@@ -1,11 +1,33 @@
 from controllers.round_controller import RoundController
 from models.player_model import PlayerManager
 from models.tournament_model import TournamentManager
+from utils.rich_component import alert_message
 from views.player_view import PlayerView
 from views.tournament_view import TournamentView
+from rich.console import Console
 
 
 class TournamentController:
+    """
+    Controller class to manage tournament-related actions, including creating tournaments, managing players,
+    and rounds.
+
+    Attributes:
+        tournament_view (TournamentView): Manages tournament-related UI interactions.
+        tournament_manager (TournamentManager): Handles tournament-related data operations.
+        player_manager (PlayerManager): Manages player-related data operations.
+        player_view (PlayerView): Manages player-related UI interactions.
+        round_controller (RoundController): Handles round-related actions within the tournament.
+        console (Console): Rich console for printing formatted messages.
+
+    Methods:
+        run(): Displays the tournament management menu and handles user choices.
+        create_tournament(): Prompts the user to create a new tournament if the last tournament is finished.
+        show_tournaments(): Displays a list of all available tournaments.
+        managing_last_tournament(): Provides management options for the last created tournament.
+        add_players_to_tournament(tournament_id): Handles the registration of players to the tournament.
+        show_players_of_tournament(tournament_id): Displays a list of players registered in the tournament.
+    """
 
     def __init__(self):
         self.tournament_view = TournamentView()
@@ -13,6 +35,7 @@ class TournamentController:
         self.player_manager = PlayerManager()
         self.player_view = PlayerView()
         self.round_controller = RoundController()
+        self.console = Console()
 
     def run(self):
         while True:
@@ -27,12 +50,17 @@ class TournamentController:
                 case 3:
                     self.managing_last_tournament()
                 case 4:
-                    # self.managing_tournament(tournament_id)
-                    pass
-                case 5:
                     break
 
     def create_tournament(self):
+        tournaments = self.tournament_manager.get_tournaments()
+        if tournaments:
+            last_tournament = tournaments[-1]
+            if not self.tournament_manager.is_tournament_finished(last_tournament.doc_id):
+                alert_message(
+                    "Vous ne pouvez pas créer un nouveau tournoi car le dernier tournoi n'est pas terminé !", "red"
+                )
+                return
         name, location, description, date_start, date_end = self.tournament_view.get_tournament_info()
         self.tournament_manager.create_tournament(name, location, description, date_start, date_end)
 
@@ -73,25 +101,24 @@ class TournamentController:
         )
 
         while len(registered_players) < max_players:
-            print("Entrez 0 pour quitter.")
+            self.console.print("Entrez 0 pour quitter.")
             player_id = self.player_view.request_id_player()
             if player_id == 0:
                 break
 
             player = self.player_manager.get_player_by_id(player_id)
             if not player:
-                print("ID invalide impossible de trouver le joueur.")
                 continue
 
             response = self.tournament_manager.add_player_to_tournament(tournament_id, player)
 
             if response["player_exist"]:
-                print(response["message"])
+                alert_message(response["message"], "red")
             else:
                 registered_players.append(player)
                 remaining_players = [p for p in remaining_players if p.id != player_id]
 
-                print(response["message"])
+                alert_message(response["message"], "green")
 
                 self.player_view.show_players(remaining_players, "Liste des joueurs disponibles.")
                 self.player_view.show_players(
@@ -99,7 +126,7 @@ class TournamentController:
                 )
 
         if len(registered_players) >= max_players:
-            print("Le nombre maximal de joueurs a été atteint pour ce tournoi.")
+            self.console.print("Le nombre maximal de joueurs a été atteint pour ce tournoi.", style="deep_sky_blue1")
 
     def show_players_of_tournament(self, tournament_id):
         players = self.tournament_manager.get_registered_players(tournament_id)
