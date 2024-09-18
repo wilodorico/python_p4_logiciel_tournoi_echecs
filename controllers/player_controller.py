@@ -5,12 +5,32 @@ from rich.console import Console
 
 
 class PlayerController:
-    console = Console()
+    """
+    Controller class responsible for managing player-related operations.
+
+    This class interacts with various views and managers to handle player-related
+    actions such as displaying, adding, and modifying player information.
+
+    Methods:
+        run():
+            Starts the main loop for handling user choices from the player menu.
+            Continues to prompt the user until an exit choice is selected.
+
+        add_player():
+            Collects player information from the user and adds a new player to the system.
+
+        modify_player():
+            Allows the user to modify an existing player's information after displaying the list of players.
+
+        show_players():
+            Retrieves and displays the list of all players.
+    """
 
     def __init__(self):
         self.player_view = PlayerView()
         self.player_manager = PlayerManager()
         self.main_menu_view = MainMenuView()
+        self.console = Console()
 
     def run(self):
         while True:

@@ -6,6 +6,35 @@ from views.tournament_view import TournamentView
 
 
 class ReportController:
+    """
+    Controller class responsible for managing report-related operations.
+
+    This class interacts with various managers and views to handle user inputs
+    and provide information related to reports, players, and tournaments.
+
+    Methods:
+        run():
+            Starts the main loop for handling user choices from the report menu.
+            Continues to prompt the user until an exit choice is selected.
+
+        get_all_players():
+            Retrieves and displays the list of all players.
+
+        get_all_tournaments():
+            Retrieves and displays the list of all tournaments.
+
+        tournament_name_and_dates():
+            Displays information about a specific tournament, including its name and dates.
+
+        get_players_of_tournament():
+            Retrieves and displays the list of players registered for a specific tournament.
+
+        get_all_matches_per_round_of_tournament():
+            Retrieves and displays information about all matches per round for a specific tournament.
+
+        get_tournament_by_id():
+            Prompts the user to select a tournament ID and retrieves the corresponding tournament details.
+    """
 
     def __init__(self):
         self.report_view = ReportView()

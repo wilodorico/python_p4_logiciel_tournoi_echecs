@@ -6,6 +6,17 @@ from utils.rich_component import alert_message
 
 
 class MainMenuController:
+    """
+    Controller class responsible for managing the main menu and navigating to other controllers.
+
+    This class interacts with various controllers (PlayerController, TournamentController, ReportController)
+    and handles user choices from the main menu to invoke the appropriate controller operations.
+
+    Methods:
+        run():
+            Starts the main loop for handling user choices from the main menu.
+            Navigates to the relevant controller based on user input and exits the program on selection.
+    """
 
     def __init__(self):
         self.main_menu_view = MainMenuView()
