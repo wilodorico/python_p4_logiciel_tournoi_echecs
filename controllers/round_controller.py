@@ -10,7 +10,45 @@ from rich.console import Console
 
 
 class RoundController:
-    console = Console()
+    """
+        Controller class responsible for managing rounds within a tournament.
+
+        This class handles the creation and management of rounds, including starting rounds,
+        displaying match details, entering match results, and updating player scores.
+
+        Attributes:
+        ----------
+        round_view : RoundView
+            The view responsible for displaying round-related information and menus.
+        round_manager : RoundManager
+            The manager responsible for handling round data and operations.
+        tournament_manager : TournamentManager
+            The manager responsible for handling tournament data and operations.
+        tournament_view : TournamentView
+            The view responsible for displaying tournament-related information.
+        player_manager : PlayerManager
+            The manager responsible for handling player data and operations.
+        main_menu_view : MainMenuView
+            The view responsible for displaying the main menu.
+        console : Console
+            A Rich console instance used to display formatted text.
+
+        Methods:
+        -------
+        run(tournament_id)
+            Manages the round operations, including starting a round, displaying matches,
+            and entering match results.
+
+        start_round(tournament_id)
+            Starts a new round for the given tournament if the tournament is not finished.
+            Generates matches for the new round.
+
+        display_matches(tournament_id)
+            Displays the matches of the current round for the given tournament.
+
+        enter_scores(tournament_id)
+            Prompts the user to enter match results for the current round and updates player scores.
+    """
 
     def __init__(self):
         self.round_view = RoundView()
@@ -19,6 +57,7 @@ class RoundController:
         self.tournament_view = TournamentView()
         self.player_manager = PlayerManager()
         self.main_menu_view = MainMenuView()
+        self.console = Console()
 
     def run(self, tournament_id):
         current_tournament = self.tournament_manager.get_tournament_by_id(tournament_id)
