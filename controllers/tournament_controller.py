@@ -8,7 +8,26 @@ from rich.console import Console
 
 
 class TournamentController:
-    console = Console()
+    """
+    Controller class to manage tournament-related actions, including creating tournaments, managing players,
+    and rounds.
+
+    Attributes:
+        tournament_view (TournamentView): Manages tournament-related UI interactions.
+        tournament_manager (TournamentManager): Handles tournament-related data operations.
+        player_manager (PlayerManager): Manages player-related data operations.
+        player_view (PlayerView): Manages player-related UI interactions.
+        round_controller (RoundController): Handles round-related actions within the tournament.
+        console (Console): Rich console for printing formatted messages.
+
+    Methods:
+        run(): Displays the tournament management menu and handles user choices.
+        create_tournament(): Prompts the user to create a new tournament if the last tournament is finished.
+        show_tournaments(): Displays a list of all available tournaments.
+        managing_last_tournament(): Provides management options for the last created tournament.
+        add_players_to_tournament(tournament_id): Handles the registration of players to the tournament.
+        show_players_of_tournament(tournament_id): Displays a list of players registered in the tournament.
+    """
 
     def __init__(self):
         self.tournament_view = TournamentView()
@@ -16,6 +35,7 @@ class TournamentController:
         self.player_manager = PlayerManager()
         self.player_view = PlayerView()
         self.round_controller = RoundController()
+        self.console = Console()
 
     def run(self):
         while True:
