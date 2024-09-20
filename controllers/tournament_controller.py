@@ -71,6 +71,8 @@ class TournamentController:
     def managing_last_tournament(self):
         while True:
             last_tournament = self.tournament_manager.get_last_tournament()
+            if not last_tournament:
+                break
             self.tournament_view.display_tournament_info(last_tournament)
             self.tournament_view.display_tournament_management_menu()
 
