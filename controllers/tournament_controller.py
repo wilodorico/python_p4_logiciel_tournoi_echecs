@@ -89,7 +89,7 @@ class TournamentController:
                     break
 
     def add_players_to_tournament(self, tournament_id):
-        max_players: int = self.tournament_manager.get_max_players(tournament_id)
+        min_players: int = self.tournament_manager.get_min_players(tournament_id)
 
         # Get the remaining players and those already registered
         player_data = self.player_manager.list_players()
@@ -99,10 +99,11 @@ class TournamentController:
         # Display available players and those already registered
         self.player_view.show_players(remaining_players, "Liste des joueurs disponibles.")
         self.player_view.show_players(
-            registered_players, f"Joueurs inscrits au tournoi {len(registered_players)}/{max_players}"
+            registered_players,
+            f"Joueurs inscrits au tournoi {len(registered_players)} ({min_players} joueurs minimum)",
         )
 
-        while len(registered_players) < max_players:
+        while True:
             self.console.print("Entrez 0 pour quitter.")
             player_id = self.player_view.request_id_player()
             if player_id == 0:
@@ -124,11 +125,15 @@ class TournamentController:
 
                 self.player_view.show_players(remaining_players, "Liste des joueurs disponibles.")
                 self.player_view.show_players(
-                    registered_players, f"Joueurs inscrits au tournoi {len(registered_players)}/{max_players}"
+                    registered_players,
+                    f"Joueurs inscrits au tournoi {len(registered_players)} ({min_players} joueurs minimum)",
                 )
 
-        if len(registered_players) >= max_players:
-            self.console.print("Le nombre maximal de joueurs a été atteint pour ce tournoi.", style="deep_sky_blue1")
+        if len(registered_players) == min_players:
+            self.console.print(
+                "Le nombre minimum de joueurs a été atteint. (conitunez ou Tapez 0 pour sortir)",
+                style="deep_sky_blue1",
+            )
 
     def show_players_of_tournament(self, tournament_id):
         players = self.tournament_manager.get_registered_players(tournament_id)

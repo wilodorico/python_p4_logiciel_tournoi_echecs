@@ -94,8 +94,9 @@ class RoundController:
             self.round_manager.create_round(tournament_id)
             self.round_manager.start_round(tournament_id)
             self.round_manager.generate_matches(tournament_id)
+            self.display_matches(tournament_id)
         else:
-            alert_message("Veuillez enregistrer les joueurs au tournoi", "deep_sky_blue1")
+            alert_message("Veuillez enregistrer les joueurs au tournoi", "red")
 
     def display_matches(self, tournament_id):
         matches = self.round_manager.get_current_round_matches(tournament_id)
