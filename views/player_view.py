@@ -137,7 +137,7 @@ class PlayerView:
     def show_players(self, players: list[Player], message: str):
         """Displays a table of players with their information."""
         if not players:
-            alert_message("Aucun joueur Enregistré !", "deep_sky_blue1")
+            alert_message("Aucun joueur Enregistré !", "red")
             return
 
         table = Table(title=message, show_lines=True)

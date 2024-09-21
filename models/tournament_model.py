@@ -24,7 +24,7 @@ class Tournament:
         number_of_current_round (int): The current round number in progress, starting from 0.
         rounds (List[Round]): A list of rounds that belong to the tournament.
         players (List[Player]): A list of players participating in the tournament.
-        max_players (int): The maximum number of players allowed in the tournament,
+        min_players (int): The minimum number of players allowed in the tournament,
                            default is twice the number of rounds.
 
     Methods:
@@ -50,7 +50,7 @@ class Tournament:
         self.number_of_current_round: int = 0
         self.rounds: List[Round] = []
         self.players: List[Player] = []
-        self.max_players: int = self.number_of_round * 2
+        self.min_players: int = self.number_of_round * 2
 
     def __str__(self) -> str:
         return f"{self.name} - {self.location}"
@@ -66,7 +66,7 @@ class Tournament:
             "number_of_current_round": self.number_of_current_round,
             "rounds": self.rounds,
             "players": self.players,
-            "max_players": self.max_players,
+            "min_players": self.min_players,
         }
 
 
@@ -88,7 +88,7 @@ class TournamentManager:
         get_last_tournament(): Retrieves the most recently created tournament.
         get_registered_players(tournament_id): Retrieves a list of players registered for a given tournament.
         add_player_to_tournament(tournament_id, player): Adds a player to a tournament.
-        get_max_players(tournament_id): Retrieves the maximum number of players allowed in the tournament.
+        get_min_players(tournament_id): Retrieves the minimum number of players allowed in the tournament.
         is_tournament_finished(tournament_id) -> bool: Checks if the tournament has been completed.
         display_final_rankings(tournament_id): Displays the final player rankings based on tournament performance.
     """
@@ -179,12 +179,12 @@ class TournamentManager:
             "message": f"Joueur {player.firstname} {player.lastname} ajouté au tournoi {tournament['name']}",
         }
 
-    def get_max_players(self, tournament_id):
+    def get_min_players(self, tournament_id):
         tournament = self.tournaments_table.get(doc_id=tournament_id)
         if not tournament:
             alert_message(f"Aucun tournoi trouvé avec l'ID: {tournament_id}", "red")
             return
-        return tournament["max_players"]
+        return tournament["min_players"]
 
     def is_tournament_finished(self, tournament_id) -> bool:
         """Returns True if the tournament is finished, otherwise False."""

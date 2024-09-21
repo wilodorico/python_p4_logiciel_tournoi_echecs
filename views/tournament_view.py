@@ -86,7 +86,7 @@ class TournamentView:
 
     def display_tournaments(self, tournaments):
         if not tournaments:
-            self.console.print("Aucun tournoi enregistré.", style="sky_blue2")
+            alert_message("Aucun tournoi enregistré.", "red")
             return
 
         table = Table(title="Liste des tournois", show_lines=True)

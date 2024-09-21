@@ -158,12 +158,10 @@ class RoundManager:
             for p in tournament.get("players", [])
         ]
 
-        max_players = tournament.get("max_players")
+        min_players = tournament.get("min_players")
 
-        if len(players) < max_players:
-            alert_message(
-                f"Veuillez enregistrer les {max_players} joueurs avant de créer des matchs", "deep_sky_blue1"
-            )
+        if len(players) < min_players:
+            alert_message(f"Veuillez enregistrer au minimum {min_players}", "deep_sky_blue1")
             return
 
         current_round_number = len(tournament["rounds"])
