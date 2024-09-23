@@ -12,24 +12,19 @@ from rich.table import Table
 
 class Tournament:
     """
-    Represents a tournament with rounds and players.
-
+    Represents the tournament model with these attributes.
     Attributes:
-        name (str): The name of the tournament.
-        location (str): The location where the tournament takes place.
-        description (str): A brief description of the tournament.
-        date_start (datetime): The start date of the tournament.
-        date_end (datetime): The end date of the tournament.
-        number_of_round (int): The total number of rounds in the tournament, default is 4.
-        number_of_current_round (int): The current round number in progress, starting from 0.
-        rounds (List[Round]): A list of rounds that belong to the tournament.
-        players (List[Player]): A list of players participating in the tournament.
-        min_players (int): The minimum number of players allowed in the tournament,
-                           default is twice the number of rounds.
+        name (str): Name of the tournament.
+        location (str): Location of the tournament.
+        description (str): Description of the tournament.
+        date_start (datetime): Start date of the tournament.
+        date_end (datetime): End date of the tournament.
+        number_of_round (int): Number of rounds in the tournament.
+        number_of_current_round (int): Number of current round in the tournament.
+        rounds (List[Round]): List of rounds in the tournament.
+        players (List[Player]): List of players in the tournament.
+        min_players (int): Minimum number of players required for the tournament.
 
-    Methods:
-        __str__(): Returns a string representation of the tournament.
-        to_dict(): Converts the tournament instance into a dictionary for serialization or storage.
     """
 
     def __init__(
@@ -55,7 +50,7 @@ class Tournament:
     def __str__(self) -> str:
         return f"{self.name} - {self.location}"
 
-    def to_dict(self):
+    def serialize(self):
         return {
             "name": self.name,
             "location": self.location,
@@ -106,6 +101,14 @@ class TournamentManager:
         date_start: datetime,
         date_end: datetime,
     ):
+        """Creates a new tournament in the database.
+        Args:
+            name (str): Name of the tournament.
+            location (str): Location of the tournament.
+            description (str): Description of the tournament.
+            date_start (datetime): Start date of the tournament.
+            date_end (datetime): End date of the tournament.
+        """
         new_tournament = Tournament(
             name,
             location,
@@ -114,15 +117,24 @@ class TournamentManager:
             date_end,
         )
 
-        self.tournaments_table.insert(new_tournament.to_dict())
-
+        self.tournaments_table.insert(new_tournament.serialize())
         alert_message(f"Tournoi '{new_tournament.name}' enregistré avec succès !", "green")
 
     def get_tournaments(self):
+        """Retrieves all tournaments from the database.
+        Returns:
+            tournaments (List[Tournament]): List of tournaments.
+        """
         tournaments = self.tournaments_table.all()
         return tournaments
 
     def get_tournament_by_id(self, tournament_id):
+        """Retrieves a tournament by its ID.
+        Args:
+            tournament_id (int): ID of the tournament.
+        Returns:
+            tournament (dict): The tournament with the given ID.
+        """
         tournament = self.tournaments_table.get(doc_id=tournament_id)
         if not tournament:
             alert_message(f"Aucun tournoi trouvé avec l'ID: {tournament_id}", "red")
@@ -131,6 +143,10 @@ class TournamentManager:
         return tournament
 
     def get_last_tournament(self):
+        """Retrieves the most recently created tournament.
+        Returns:
+            last_tournament (dict): The most recently created tournament.
+        """
         tournament_data = self.tournaments_table.all()
         if not tournament_data:
             return alert_message("Aucun tournoi enregistré", "red")
@@ -138,6 +154,12 @@ class TournamentManager:
         return last_tournament
 
     def get_registered_players(self, tournament_id):
+        """Retrieves a list of players registered for a given tournament.
+        Args:
+            tournament_id (int): ID of the tournament.
+        Returns:
+            players (List[Player]): List of players registered for the tournament.
+        """
         tournament = self.tournaments_table.get(doc_id=tournament_id)
         if not tournament:
             alert_message(f"Aucun tournoi trouvé avec l'ID: {tournament_id}", "red")
@@ -159,6 +181,13 @@ class TournamentManager:
         return players
 
     def add_player_to_tournament(self, tournament_id, player: Player):
+        """Adds a player to a tournament.
+        Args:
+            tournament_id (int): ID of the tournament.
+            player (Player): The player to be added.
+        Returns:
+            response (dict): A dictionary containing information about the player's addition.
+        """
         tournament = self.tournaments_table.get(doc_id=tournament_id)
         if not tournament:
             alert_message(f"Aucun tournoi trouvé avec l'ID: {tournament_id}", "red")
@@ -171,7 +200,7 @@ class TournamentManager:
                     "message": "Ce joueur est déjà enregistré au tournoi",
                 }
 
-        tournament["players"].append(player.to_dict())
+        tournament["players"].append(player.serialize())
         self.tournaments_table.update(tournament, doc_ids=[tournament_id])
 
         return {
@@ -180,6 +209,12 @@ class TournamentManager:
         }
 
     def get_min_players(self, tournament_id):
+        """Retrieves the minimum number of players required for a tournament.
+        Args:
+            tournament_id (int): ID of the tournament.
+        Returns:
+            min_players (int): The minimum number of players required for the tournament.
+        """
         tournament = self.tournaments_table.get(doc_id=tournament_id)
         if not tournament:
             alert_message(f"Aucun tournoi trouvé avec l'ID: {tournament_id}", "red")
@@ -187,7 +222,12 @@ class TournamentManager:
         return tournament["min_players"]
 
     def is_tournament_finished(self, tournament_id) -> bool:
-        """Returns True if the tournament is finished, otherwise False."""
+        """Checks if a tournament is finished.
+        Args:
+            tournament_id (int): ID of the tournament.
+        Returns:
+            is_finished (bool): True if the tournament is finished, False otherwise.
+        """
         tournament = self.tournaments_table.get(doc_id=tournament_id)
         if not tournament:
             alert_message(f"Aucun tournoi trouvé avec l'ID: {tournament_id}", "red")

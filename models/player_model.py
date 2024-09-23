@@ -21,7 +21,7 @@ class Player:
         __str__(): Returns the player's full name.
         __repr__(): Provides a string representation of the player.
         add_opponent(opponent_id): Adds an opponent to the player's opponent list if not already present.
-        to_dict(): Converts the player's attributes into a dictionary format.
+        serialize(): Converts the player's attributes into a dictionary format.
     """
 
     def __init__(
@@ -52,7 +52,7 @@ class Player:
         if opponent_id not in self.latest_opponents:
             self.latest_opponents.append(opponent_id)
 
-    def to_dict(self):
+    def serialize(self):
         return {
             "id": self.id,
             "firstname": self.firstname,

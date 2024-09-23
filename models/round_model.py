@@ -29,7 +29,7 @@ class Round:
 
     Methods:
         __str__(): Returns the name of the round as a string representation.
-        to_dict(): Converts the round instance into a dictionary for serialization.
+        serialize(): Converts the round instance into a dictionary for serialization.
         start(): Marks the round as started by setting the start time to the current time.
         end(): Marks the round as finished by setting the end time to the current time.
         is_running(): Checks if the round has started.
@@ -46,7 +46,7 @@ class Round:
     def __str__(self) -> str:
         return self.name
 
-    def to_dict(self):
+    def serialize(self):
         return {
             "name": self.name,
             "matches": self.matches,
@@ -122,7 +122,7 @@ class RoundManager:
         total_tournament_rounds += 1
         tournament["number_of_current_round"] = total_tournament_rounds
         new_round = Round(f"Round {total_tournament_rounds}")
-        tournament["rounds"].append(new_round.to_dict())
+        tournament["rounds"].append(new_round.serialize())
         self.tournaments_table.update(tournament, doc_ids=[tournament_id])
 
         alert_message(f"{new_round.name} enregistré avec succès !", "green")
@@ -178,7 +178,7 @@ class RoundManager:
             self.matches = self.create_matches_based_on_ranking(tournament, players)
 
         tournament["rounds"][-1]["matches"] = self.matches
-        tournament["players"] = [player.to_dict() for player in players]
+        tournament["players"] = [player.serialize() for player in players]
         self.tournaments_table.update(tournament, doc_ids=[tournament_id])
 
         alert_message("Les matchs ont été générés avec succès !", "green")
