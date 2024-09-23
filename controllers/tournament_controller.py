@@ -18,15 +18,7 @@ class TournamentController:
         player_manager (PlayerManager): Manages player-related data operations.
         player_view (PlayerView): Manages player-related UI interactions.
         round_controller (RoundController): Handles round-related actions within the tournament.
-        console (Console): Rich console for printing formatted messages.
-
-    Methods:
-        run(): Displays the tournament management menu and handles user choices.
-        create_tournament(): Prompts the user to create a new tournament if the last tournament is finished.
-        show_tournaments(): Displays a list of all available tournaments.
-        managing_last_tournament(): Provides management options for the last created tournament.
-        add_players_to_tournament(tournament_id): Handles the registration of players to the tournament.
-        show_players_of_tournament(tournament_id): Displays a list of players registered in the tournament.
+        console (Console): A Rich Console object for displaying styled output in the terminal.
     """
 
     def __init__(self):
@@ -38,6 +30,7 @@ class TournamentController:
         self.console = Console()
 
     def run(self):
+        """Displays the tournament management menu and handles user choices."""
         while True:
             self.tournament_view.display_tournament_menu()
             choice: int = self.tournament_view.request_user_choice()
@@ -53,6 +46,7 @@ class TournamentController:
                     break
 
     def create_tournament(self):
+        """Prompts the user to create a new tournament if the last tournament is finished."""
         tournaments = self.tournament_manager.get_tournaments()
         if tournaments:
             last_tournament = tournaments[-1]
@@ -65,10 +59,12 @@ class TournamentController:
         self.tournament_manager.create_tournament(name, location, description, date_start, date_end)
 
     def show_tournaments(self):
+        """Displays a table of all available tournaments."""
         tournaments = self.tournament_manager.get_tournaments()
         self.tournament_view.display_tournaments(tournaments)
 
     def managing_last_tournament(self):
+        """Provides management options for the last created tournament."""
         while True:
             last_tournament = self.tournament_manager.get_last_tournament()
             if not last_tournament:
@@ -89,6 +85,7 @@ class TournamentController:
                     break
 
     def add_players_to_tournament(self, tournament_id):
+        """Handles the registration of players to the tournament."""
         min_players: int = self.tournament_manager.get_min_players(tournament_id)
 
         # Get the remaining players and those already registered
@@ -129,12 +126,13 @@ class TournamentController:
                     f"Joueurs inscrits au tournoi {len(registered_players)} ({min_players} joueurs minimum)",
                 )
 
-        if len(registered_players) == min_players:
-            self.console.print(
-                "Le nombre minimum de joueurs a été atteint. (conitunez ou Tapez 0 pour sortir)",
-                style="deep_sky_blue1",
-            )
+                if len(registered_players) == min_players:
+                    self.console.print(
+                        "Le nombre minimum de joueurs a été atteint. (conitunez ou Tapez 0 pour sortir)",
+                        style="deep_sky_blue1",
+                    )
 
     def show_players_of_tournament(self, tournament_id):
+        """Displays a table of players registered in the tournament."""
         players = self.tournament_manager.get_registered_players(tournament_id)
         self.player_view.show_players(players, "Liste des joueurs inscrits au tournoi.")

@@ -11,11 +11,12 @@ class MainMenuController:
 
     This class interacts with various controllers (PlayerController, TournamentController, ReportController)
     and handles user choices from the main menu to invoke the appropriate controller operations.
-
-    Methods:
-        run():
-            Starts the main loop for handling user choices from the main menu.
-            Navigates to the relevant controller based on user input and exits the program on selection.
+    Attributes:
+        main_menu_view (MainMenuView): Manages the main menu.
+        player_controller (PlayerController): Manages player-related actions.
+        tournament_controller (TournamentController): Manages tournament-related actions.
+        report_controller (ReportController): Manages report-related actions.
+        console (Console): A Rich Console object for displaying styled output in the terminal.
     """
 
     def __init__(self):
@@ -25,6 +26,7 @@ class MainMenuController:
         self.report_controller = ReportController()
 
     def run(self):
+        """Displays the main menu and handles user choices."""
         while True:
             self.main_menu_view.display_main_menu()
             choice: int = self.main_menu_view.request_user_choice()

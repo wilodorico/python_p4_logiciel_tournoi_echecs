@@ -26,14 +26,6 @@ class Round:
         start_at (datetime): The timestamp when the round started.
         end_at (datetime): The timestamp when the round ended.
         status (RoundStatus): The current status of the round (Created, Started, or Finished).
-
-    Methods:
-        __str__(): Returns the name of the round as a string representation.
-        to_dict(): Converts the round instance into a dictionary for serialization.
-        start(): Marks the round as started by setting the start time to the current time.
-        end(): Marks the round as finished by setting the end time to the current time.
-        is_running(): Checks if the round has started.
-        add_match(match): Adds a match to the list of matches in the round.
     """
 
     def __init__(self, name: str):
@@ -46,7 +38,7 @@ class Round:
     def __str__(self) -> str:
         return self.name
 
-    def to_dict(self):
+    def serialize(self):
         return {
             "name": self.name,
             "matches": self.matches,
@@ -54,18 +46,6 @@ class Round:
             "end_at": self.end_at.strftime("%d-%m-%Y %H:%M:%S") if self.end_at else None,
             "status": self.status.value,
         }
-
-    def start(self):
-        self.start_at = datetime.now()
-
-    def end(self):
-        self.end_at = datetime.now()
-
-    def is_running(self):
-        return self.start_at
-
-    def add_match(self, match: Match):
-        self.matches.append(match.players)
 
 
 class RoundManager:
@@ -78,20 +58,6 @@ class RoundManager:
         tournaments_table (Table): A reference to the tournaments table in the database.
         matches (list): A list that stores generated matches for a round.
         console (Console): Rich console for printing formatted messages.
-
-    Methods:
-        get_tournament(tournament_id): Retrieves a tournament by its ID.
-        create_round(tournament_id): Creates a new round in the tournament.
-        start_round(tournament_id): Starts the current round of the tournament.
-        generate_matches(tournament_id): Generates matches for the current round.
-        create_random_matches(players): Generates random matches for the first round.
-        create_matches_based_on_ranking(tournament, players): Generates matches based on player ranking.
-        get_already_played_pairs(tournament): Retrieves pairs of players who have already played together.
-        get_current_round_matches(tournament_id): Retrieves the matches for the current round.
-        enter_scores(tournament_id, choices): Assigns match scores for the current round based on user input.
-        set_match_result(match, score1, score2): Assigns scores to players in a match.
-        update_player_scores(tournament_id): Updates the total points for each player based on match results.
-        get_players_tournament(tournament_id): Retrieves the list of players registered in a tournament.
     """
 
     def __init__(self, db_path="data/tournaments/tournaments.json"):
@@ -101,7 +67,10 @@ class RoundManager:
         self.console = Console()
 
     def get_tournament(self, tournament_id):
-        """Helper method to get a tournament by ID."""
+        """Helper method to get a tournament by ID.
+        Returns:
+            tournament (dict): The tournament with the given ID.
+        """
         tournament = self.tournaments_table.get(doc_id=tournament_id)
         if not tournament:
             alert_message(f"Aucun tournoi trouvé avec l'ID: {tournament_id}", "red")
@@ -109,6 +78,11 @@ class RoundManager:
         return tournament
 
     def create_round(self, tournament_id):
+        """Creates a new round for a tournament if the last round is not finished.
+        change status to CREATED and save in database.
+        Args:
+            tournament_id (int): ID of the tournament.
+        """
         tournament = self.get_tournament(tournament_id)
         total_tournament_rounds = len(tournament["rounds"])
 
@@ -122,12 +96,16 @@ class RoundManager:
         total_tournament_rounds += 1
         tournament["number_of_current_round"] = total_tournament_rounds
         new_round = Round(f"Round {total_tournament_rounds}")
-        tournament["rounds"].append(new_round.to_dict())
+        tournament["rounds"].append(new_round.serialize())
         self.tournaments_table.update(tournament, doc_ids=[tournament_id])
 
         alert_message(f"{new_round.name} enregistré avec succès !", "green")
 
     def start_round(self, tournament_id):
+        """Starts the current round of a tournament.
+        Args:
+            tournament_id (int): ID of the tournament.
+        """
         tournament = self.get_tournament(tournament_id)
         if tournament["rounds"]:
             current_round = tournament["rounds"][-1]
@@ -145,6 +123,11 @@ class RoundManager:
             )
 
     def generate_matches(self, tournament_id):
+        """Generates matches for the current round. If the first round generated random matches,
+        otherwise it generates matches based on player ranking. Saves the matches in the database.
+        Args:
+            tournament_id (int): ID of the tournament.
+        """
         tournament = self.get_tournament(tournament_id)
         players: List[Player] = [
             Player(
@@ -178,12 +161,18 @@ class RoundManager:
             self.matches = self.create_matches_based_on_ranking(tournament, players)
 
         tournament["rounds"][-1]["matches"] = self.matches
-        tournament["players"] = [player.to_dict() for player in players]
+        tournament["players"] = [player.serialize() for player in players]
         self.tournaments_table.update(tournament, doc_ids=[tournament_id])
 
         alert_message("Les matchs ont été générés avec succès !", "green")
 
     def create_random_matches(self, players: List[Player]):
+        """Generates random matches for the first round.
+        Args:
+            players (List[Player]): List of players in the tournament.
+        Returns:
+            matches (List[Match]): List of generated matches.
+        """
         matches = []
         random.shuffle(players)
 
@@ -191,7 +180,7 @@ class RoundManager:
             player1 = players[i]
             player2 = players[i + 1]
             match = Match(
-                str(player1),  # TODO: voir si il faut utiliser une instance de Player
+                str(player1),
                 0.0,
                 str(player2),
                 0.0,
@@ -201,6 +190,13 @@ class RoundManager:
         return matches
 
     def create_matches_based_on_ranking(self, tournament, players: List[dict]):
+        """Generates matches based on player ranking.
+        Args:
+            tournament (dict): Dictionary representing the tournament data.
+            players (List[dict]): List of player dictionaries.
+        Returns:
+            matches (List[Match]): List of generated matches.
+        """
         matches = []
         # Sort players by total score (from highest to lowest)
         players.sort(key=lambda player: player.point, reverse=True)
@@ -251,6 +247,12 @@ class RoundManager:
         return already_played
 
     def get_current_round_matches(self, tournament_id):
+        """Retrieves the matches for the current round.
+        Args:
+            tournament_id (int): ID of the tournament.
+        Returns:
+            matches (List[Match]): List of matches for the current round.
+        """
         tournament = self.get_tournament(tournament_id)
         if not tournament["rounds"]:
             alert_message("Aucun Round créé: Veuillez d'abord créer un Round", "red")
@@ -356,6 +358,12 @@ class RoundManager:
         alert_message("Les scores des joueurs ont été mis à jour avec succès.", "green")
 
     def get_players_tournament(self, tournament_id):
+        """Retrieves the list of players registered in a tournament.
+        Args:
+            tournament_id (int): ID of the tournament.
+        Returns:
+            players (List[dict]): List of players registered in the tournament.
+        """
         tournament = self.get_tournament(tournament_id)
         players = [player for player in tournament.get("players", [])]
         return players

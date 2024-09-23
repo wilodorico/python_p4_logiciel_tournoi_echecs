@@ -31,23 +31,7 @@ class RoundController:
         main_menu_view : MainMenuView
             The view responsible for displaying the main menu.
         console : Console
-            A Rich console instance used to display formatted text.
-
-        Methods:
-        -------
-        run(tournament_id)
-            Manages the round operations, including starting a round, displaying matches,
-            and entering match results.
-
-        start_round(tournament_id)
-            Starts a new round for the given tournament if the tournament is not finished.
-            Generates matches for the new round.
-
-        display_matches(tournament_id)
-            Displays the matches of the current round for the given tournament.
-
-        enter_scores(tournament_id)
-            Prompts the user to enter match results for the current round and updates player scores.
+            A Rich Console object for displaying styled output in the terminal.
     """
 
     def __init__(self):
@@ -70,7 +54,7 @@ class RoundController:
         )
 
         while True:
-            self.round_view.display_main_menu(current_round_number)
+            self.round_view.display_round_menu(current_round_number)
             choice: int = self.round_view.request_user_choice()
 
             match choice:
@@ -84,6 +68,11 @@ class RoundController:
                     break
 
     def start_round(self, tournament_id):
+        """Create and Starts a new round for the given tournament if the tournament is not finished.
+        Generates matches for the new round and displays the table of matches.
+        Args:
+            tournament_id (int): ID of the tournament.
+        """
         if self.tournament_manager.is_tournament_finished(tournament_id):
             alert_message("Tournoi terminé !", "deep_sky_blue1")
             self.tournament_manager.display_final_rankings(tournament_id)
@@ -99,11 +88,19 @@ class RoundController:
             alert_message("Veuillez enregistrer les joueurs au tournoi", "red")
 
     def display_matches(self, tournament_id):
+        """Displays the matches of the current round for the given tournament.
+        Args:
+            tournament_id (int): ID of the tournament.
+        """
         matches = self.round_manager.get_current_round_matches(tournament_id)
         if matches:
             self.round_view.display_matches(matches)
 
     def enter_scores(self, tournament_id):
+        """Prompts the user to enter match results for the current round and updates player scores.
+        Args:
+            tournament_id (int): ID of the tournament.
+        """
         matches = self.round_manager.get_current_round_matches(tournament_id)
         if matches:
             choices: List[int] = []

@@ -10,12 +10,6 @@ class ReportView:
 
     Attributes:
         console (Console): A Rich Console object for displaying styled output in the terminal.
-
-    Methods:
-        display_reports_menu(): Displays the menu for generating various reports.
-        request_user_choice() -> int: Prompts the user to select an option from the reports menu.
-        request_tournament_id(): Prompts the user to enter a tournament ID for generating a report.
-        display_all_matches_per_round_of_tournament(tournament): Displays all matches and rounds of a given tournament.
     """
 
     def __init__(self):
@@ -34,6 +28,9 @@ class ReportView:
         self.console.print("=================================================", style="deep_sky_blue1")
 
     def request_user_choice(self) -> int:
+        """Requests the user choice from the console.
+        Returns the choice as an integer.
+        """
         while True:
             try:
                 choice: int = IntPrompt.ask("Veuillez entrer un choix", choices=["1", "2", "3", "4", "5", "6"])
@@ -42,6 +39,9 @@ class ReportView:
                 alert_message("Erreur : Veuillez entrer un nombre [1/2/3/4/5/6]", "red")
 
     def request_tournament_id(self):
+        """Requests the user to enter a tournament ID.
+        Returns the ID as an integer.
+        """
         try:
             tournament_id: int = IntPrompt.ask("Veuillez entrer l'ID du tournoi")
             return tournament_id
@@ -50,6 +50,10 @@ class ReportView:
             return self.request_tournament_id()
 
     def display_all_matches_per_round_of_tournament(self, tournament):
+        """Displays all matches per round of a tournament.
+        Args:
+            tournament (dict): Dictionary representing the tournament data.
+        """
         rounds = tournament.get("rounds", [])
 
         # For each round, create and display a table

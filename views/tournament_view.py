@@ -11,16 +11,6 @@ class TournamentView:
     Attributes:
         console (Console): A Rich Console object for displaying styled output in the terminal.
         input_validator (InputValidator): An object for validating user input.
-
-    Methods:
-        get_tournament_info(): Prompts the user to enter tournament information and validates the input.
-        display_tournament_info(tournament): Displays details of a specific tournament.
-        display_tournament_menu(): Displays the main tournament management menu.
-        request_user_choice(): Prompts the user to select an option from the tournament menu.
-        display_tournaments(tournaments): Displays a list of all tournaments in a formatted table.
-        display_tournament_management_menu(): Displays the tournament management submenu.
-        request_tournament_management_choice(): Prompts the user to select an option from
-                                                the tournament management submenu.
     """
 
     def __init__(self):
@@ -28,6 +18,15 @@ class TournamentView:
         self.input_validator = InputValidator()
 
     def get_tournament_info(self):
+        """Function for retrieving tournament information
+        Returns:
+            name (str): Name of the tournament
+            location (str): Location of the tournament
+            description (str): Description of the tournament
+            date_start (datetime): Start date of the tournament
+            date_end (datetime): End date of the tournament
+        """
+
         def prompt_with_retry(validate_func, prompt_text):
             """Helper function to prompt for input and retry until a valid value is entered."""
             while True:
@@ -61,6 +60,7 @@ class TournamentView:
             )
 
     def display_tournament_menu(self):
+        """Function for displaying the tournament menu"""
         self.console.print("=================================", style="deep_sky_blue1")
         self.console.print("       Gestion tournoi       ")
         self.console.print("=================================", style="deep_sky_blue1")
@@ -71,6 +71,10 @@ class TournamentView:
         self.console.print("=================================", style="deep_sky_blue1")
 
     def request_user_choice(self):
+        """Function for requesting user choice
+        Returns:
+            choice_number (int): Choice number
+        """
         while True:
             print()
             choice = self.console.input("Veuillez entrer un choix [thistle3][1/2/3/4]: ")
@@ -85,6 +89,10 @@ class TournamentView:
                 alert_message("Veuillez entrer un choix valide [1/2/3/4]", "red")
 
     def display_tournaments(self, tournaments):
+        """Function for displaying tournaments
+        Args:
+            tournaments (List[Tournament]): List of tournaments
+        """
         if not tournaments:
             alert_message("Aucun tournoi enregistré.", "red")
             return
@@ -108,6 +116,7 @@ class TournamentView:
         self.console.print(table)
 
     def display_tournament_management_menu(self):
+        """Function for displaying tournament management menu"""
         self.console.print("=================================", style="deep_sky_blue1")
         self.console.print("       Menu tournoi       ")
         self.console.print("=================================", style="deep_sky_blue1")
@@ -118,6 +127,10 @@ class TournamentView:
         self.console.print("=================================", style="deep_sky_blue1")
 
     def request_tournament_management_choice(self):
+        """Function for requesting tournament management choice
+        Returns:
+            choice_number (int): Choice number
+        """
         while True:
             print()
             choice = self.console.input("Veuillez entrer un choix [thistle3][1/2/3/4]: ")
