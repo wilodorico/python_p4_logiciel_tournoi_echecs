@@ -5,7 +5,10 @@ from utils.rich_component import alert_message
 
 
 class MainMenuView:
-    """Class to display the main menu."""
+    """Class to display the main menu.
+    Args:
+        console (Console): A Rich Console object for displaying styled output in the terminal.
+    """
 
     def __init__(self):
         self.console = Console()

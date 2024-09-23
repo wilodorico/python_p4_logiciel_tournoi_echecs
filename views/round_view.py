@@ -4,24 +4,16 @@ from utils.rich_component import alert_message
 
 
 class RoundView:
-    """
-    The RoundView class is responsible for displaying and interacting with
-    the user regarding round managementin the tournament.
+    """The RoundView class handles the display and interaction related to round management.
 
     Attributes:
         console (Console): A Rich Console object for displaying styled output in the terminal.
-
-    Methods:
-        display_main_menu(round_number: int): Displays the main menu for round management.
-        request_user_choice() -> int: Prompts the user to select an option from the round management menu.
-        display_matches(matches): Displays a list of matches in a formatted table.
-        prompt_for_match_result(match, match_number: int) -> int: Prompts the user to enter the result of a match.
     """
 
     def __init__(self):
         self.console = Console()
 
-    def display_main_menu(self, round_number: int):
+    def display_round_menu(self, round_number: int):
         self.console.print("=================================", style="deep_sky_blue1")
         self.console.print("       Gestion Round       ")
         self.console.print("=================================", style="deep_sky_blue1")
@@ -32,6 +24,10 @@ class RoundView:
         self.console.print("=================================", style="deep_sky_blue1")
 
     def request_user_choice(self) -> int:
+        """Asks the player to choose an option from the Round management menu
+        Returns:
+            choice_number (int): The number of the chosen option
+        """
         while True:
             choice = self.console.input("Veuillez entrer un choix [thistle3][1/2/3/4]: ")
             print()
@@ -45,6 +41,7 @@ class RoundView:
                 alert_message("Veuillez entrer un nombre [1/2/3/4]", "red")
 
     def display_matches(self, matches):
+        """Displays the list of matches for the current round."""
         table = Table(title="Liste des matchs", show_lines=True)
 
         table.add_column("Match", justify="center", style="cyan", no_wrap=True)
@@ -66,7 +63,10 @@ class RoundView:
         self.console.print(table)
 
     def prompt_for_match_result(self, match, match_number: int):
-        """Displays the results options for a match and returns the user's choice."""
+        """Prompts the player to enter the result of a match.
+        Returns:
+            choice (int): The number of the chosen option
+        """
         player1_name = match[0][0]
         player2_name = match[1][0]
         self.console.print(

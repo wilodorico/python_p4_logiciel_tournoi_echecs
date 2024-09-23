@@ -14,14 +14,6 @@ class PlayerView:
     Attributes:
         console (Console): A Rich Console object for printing styled messages.
         input_validator (InputValidator): An object for validating user input.
-
-    Methods:
-        display_player_menu(): Displays the player management menu.
-        request_user_choice(): Prompts the user to choose an option from the player menu.
-        request_player_info(): Prompts the user to enter player information and validates the input.
-        request_id_player(): Prompts the user to enter a player ID.
-        request_update_player_info(player): Prompts the user to update an existing player's information.
-        show_players(players: list[Player], message: str): Displays a list of players in a formatted table.
     """
 
     def __init__(self):
@@ -39,6 +31,9 @@ class PlayerView:
         self.console.print("============================", style="deep_sky_blue1")
 
     def request_user_choice(self):
+        """Requests the user choice from the console.
+        Returns the choice as an integer.
+        """
         try:
             choice: int = IntPrompt.ask("Choisissez une option", choices=["1", "2", "3", "4"])
             print()
@@ -51,7 +46,14 @@ class PlayerView:
             return self.display_player_menu()
 
     def request_player_info(self):
-        """Prompts the user for player information and validates the input."""
+        """Prompts the user for player information and validates the input.
+        Returns:
+            firstname (str): First name of the player.
+            lastname (str): Last name of the player.
+            date_of_birth (datetime): Date of birth of the player.
+            point (float): Points of the player.
+            national_id (str): National ID of the player.
+        """
 
         def prompt_with_retry(validate_func, prompt_text):
             """Helper function to prompt for input and retry until a valid value is entered."""
@@ -74,7 +76,9 @@ class PlayerView:
         return firstname, lastname, date_of_birth, point, national_id
 
     def request_id_player(self):
-        """Prompts the user to enter a player ID."""
+        """Prompts the user to enter a player ID.
+        Returns the ID as an integer.
+        """
         try:
             player_id: int = IntPrompt.ask("Veuillez entrer l'identifiant du joueur")
             return player_id
@@ -86,6 +90,12 @@ class PlayerView:
         """Used to update a player's information field by field.
 
         If the user leaves the field blank, the player's current value is retained.
+        Returns:
+            firstname (str): First name of the player.
+            lastname (str): Last name of the player.
+            date_of_birth (datetime): Date of birth of the player.
+            point (float): Points of the player.
+            national_id (str): National ID of the player.
         """
 
         self.console.print("Laissez le champ vide si vous ne souhaitez pas le changer.", style="deep_sky_blue1")

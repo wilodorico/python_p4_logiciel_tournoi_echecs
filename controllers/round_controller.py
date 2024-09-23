@@ -70,7 +70,7 @@ class RoundController:
         )
 
         while True:
-            self.round_view.display_main_menu(current_round_number)
+            self.round_view.display_round_menu(current_round_number)
             choice: int = self.round_view.request_user_choice()
 
             match choice:
