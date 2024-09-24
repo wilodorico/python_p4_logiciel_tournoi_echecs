@@ -45,8 +45,6 @@ class RoundController:
 
     def run(self, tournament_id):
         current_tournament = self.tournament_manager.get_tournament_by_id(tournament_id)
-        current_round_number = current_tournament["number_of_current_round"] + 1
-
         alert_message(
             f"Tournoi {current_tournament["name"]} du {current_tournament["date_start"]} "
             f"au {current_tournament["date_end"]}",
@@ -54,7 +52,7 @@ class RoundController:
         )
 
         while True:
-            self.round_view.display_round_menu(current_round_number)
+            self.round_view.display_round_menu()
             choice: int = self.round_view.request_user_choice()
 
             match choice:
@@ -65,6 +63,8 @@ class RoundController:
                 case 3:
                     self.enter_scores(tournament_id)
                 case 4:
+                    self.display_rankings(tournament_id)
+                case 5:
                     break
 
     def start_round(self, tournament_id):
@@ -75,7 +75,7 @@ class RoundController:
         """
         if self.tournament_manager.is_tournament_finished(tournament_id):
             alert_message("Tournoi terminé !", "deep_sky_blue1")
-            self.tournament_manager.display_final_rankings(tournament_id)
+            self.display_rankings(tournament_id)
             return
 
         players = self.round_manager.get_players_tournament(tournament_id)
@@ -109,3 +109,12 @@ class RoundController:
                 choices.append(choice)
             self.round_manager.enter_scores(tournament_id, choices)
             self.round_manager.update_player_scores(tournament_id)
+
+    def display_rankings(self, tournament_id):
+        """Displays the ranking of players based on their points."""
+        players = self.tournament_manager.get_registered_players(tournament_id)
+        if not players:
+            alert_message("Aucun joueur enregistré pour ce tournoi", "red")
+            return
+        players.sort(key=lambda player: player.point, reverse=True)
+        self.round_view.display_rankings(players)
