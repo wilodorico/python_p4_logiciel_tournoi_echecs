@@ -11,27 +11,27 @@ from rich.console import Console
 
 class RoundController:
     """
-        Controller class responsible for managing rounds within a tournament.
+    Controller class responsible for managing rounds within a tournament.
 
-        This class handles the creation and management of rounds, including starting rounds,
-        displaying match details, entering match results, and updating player scores.
+    This class handles the creation and management of rounds, including starting rounds,
+    displaying match details, entering match results, and updating player scores.
 
-        Attributes:
-        ----------
-        round_view : RoundView
-            The view responsible for displaying round-related information and menus.
-        round_manager : RoundManager
-            The manager responsible for handling round data and operations.
-        tournament_manager : TournamentManager
-            The manager responsible for handling tournament data and operations.
-        tournament_view : TournamentView
-            The view responsible for displaying tournament-related information.
-        player_manager : PlayerManager
-            The manager responsible for handling player data and operations.
-        main_menu_view : MainMenuView
-            The view responsible for displaying the main menu.
-        console : Console
-            A Rich Console object for displaying styled output in the terminal.
+    Attributes:
+    ----------
+    round_view : RoundView
+        The view responsible for displaying round-related information and menus.
+    round_manager : RoundManager
+        The manager responsible for handling round data and operations.
+    tournament_manager : TournamentManager
+        The manager responsible for handling tournament data and operations.
+    tournament_view : TournamentView
+        The view responsible for displaying tournament-related information.
+    player_manager : PlayerManager
+        The manager responsible for handling player data and operations.
+    main_menu_view : MainMenuView
+        The view responsible for displaying the main menu.
+    console : Console
+        A Rich Console object for displaying styled output in the terminal.
     """
 
     def __init__(self):
@@ -45,11 +45,7 @@ class RoundController:
 
     def run(self, tournament_id):
         current_tournament = self.tournament_manager.get_tournament_by_id(tournament_id)
-        alert_message(
-            f"Tournoi {current_tournament["name"]} du {current_tournament["date_start"]} "
-            f"au {current_tournament["date_end"]}",
-            "deep_sky_blue1",
-        )
+        self.tournament_view.display_tournament_info(current_tournament)
 
         while True:
             self.round_view.display_round_menu()
@@ -109,6 +105,11 @@ class RoundController:
                 choices.append(choice)
             self.round_manager.enter_scores(tournament_id, choices)
             self.round_manager.update_player_scores(tournament_id)
+
+        if self.tournament_manager.is_tournament_finished(tournament_id):
+            alert_message("Tournoi terminé !", "deep_sky_blue1")
+            self.display_rankings(tournament_id)
+            return
 
     def display_rankings(self, tournament_id):
         """Displays the ranking of players based on their points."""
