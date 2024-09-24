@@ -189,11 +189,11 @@ class RoundManager:
 
         return matches
 
-    def create_matches_based_on_ranking(self, tournament, players: List[dict]):
+    def create_matches_based_on_ranking(self, tournament, players: List[Player]):
         """Generates matches based on player ranking.
         Args:
             tournament (dict): Dictionary representing the tournament data.
-            players (List[dict]): List of player dictionaries.
+            players (List[Player]): List of player dictionaries.
         Returns:
             matches (List[Match]): List of generated matches.
         """
@@ -251,7 +251,7 @@ class RoundManager:
         Args:
             tournament_id (int): ID of the tournament.
         Returns:
-            matches (List[Match]): List of matches for the current round.
+            matches (List[dict]): List of matches for the current round.
         """
         tournament = self.get_tournament(tournament_id)
         if not tournament["rounds"]:

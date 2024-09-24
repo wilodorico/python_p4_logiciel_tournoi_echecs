@@ -7,7 +7,6 @@ from models.player_model import Player
 from models.round_model import Round, RoundStatus
 from utils.rich_component import alert_message
 from rich.console import Console
-from rich.table import Table
 
 
 class Tournament:
@@ -24,7 +23,6 @@ class Tournament:
         rounds (List[Round]): List of rounds in the tournament.
         players (List[Player]): List of players in the tournament.
         min_players (int): Minimum number of players required for the tournament.
-
     """
 
     def __init__(
@@ -74,18 +72,6 @@ class TournamentManager:
         db (TinyDB): The database connection to store and retrieve tournament data.
         tournaments_table (Table): The specific table within the TinyDB where tournament data is stored.
         console (Console): A Rich Console object for printing styled messages in the terminal.
-
-    Methods:
-        create_tournament(name, location, description, date_start, date_end): Creates and stores a new tournament in
-                                                                              the database.
-        get_tournaments(): Retrieves and returns a list of all tournaments from the database.
-        get_tournament_by_id(tournament_id): Retrieves a specific tournament by its ID.
-        get_last_tournament(): Retrieves the most recently created tournament.
-        get_registered_players(tournament_id): Retrieves a list of players registered for a given tournament.
-        add_player_to_tournament(tournament_id, player): Adds a player to a tournament.
-        get_min_players(tournament_id): Retrieves the minimum number of players allowed in the tournament.
-        is_tournament_finished(tournament_id) -> bool: Checks if the tournament has been completed.
-        display_final_rankings(tournament_id): Displays the final player rankings based on tournament performance.
     """
 
     def __init__(self, db_path="data/tournaments/tournaments.json"):
@@ -241,23 +227,3 @@ class TournamentManager:
             if last_round["status"] == RoundStatus.FINISHED.value:
                 return True
         return False
-
-    def display_final_rankings(self, tournament_id):
-        """Displays the final ranking of players based on their points."""
-        tournament = self.tournaments_table.get(doc_id=tournament_id)
-        if not tournament:
-            alert_message(f"Aucun tournoi trouvé avec l'ID: {tournament_id}", "red")
-            return
-        players = tournament.get("players", [])
-        players.sort(key=lambda player: player["point"], reverse=True)
-
-        table = Table(title="=== Classement Final ===", show_lines=True)
-        table.add_column("Rang", justify="right", style="cyan", no_wrap=True)
-        table.add_column("Prénom", style="magenta")
-        table.add_column("Nom", style="magenta")
-        table.add_column("Points", justify="right", style="green")
-
-        for rank, player in enumerate(players, start=1):
-            table.add_row(str(rank), player["firstname"], player["lastname"], str(player["point"]))
-
-        self.console.print(table)

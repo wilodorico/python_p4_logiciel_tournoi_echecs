@@ -13,14 +13,15 @@ class RoundView:
     def __init__(self):
         self.console = Console()
 
-    def display_round_menu(self, round_number: int):
+    def display_round_menu(self):
         self.console.print("=================================", style="deep_sky_blue1")
         self.console.print("       Gestion Round       ")
         self.console.print("=================================", style="deep_sky_blue1")
-        self.console.print(f"1. Démarrer le Round n°{round_number}")
+        self.console.print("1. Démarrer un Round")
         self.console.print("2. Afficher la liste des matchs")
         self.console.print("3. Renseigner les scores")
-        self.console.print("4. Retour au menu du tournoi")
+        self.console.print("4. Voir le classement")
+        self.console.print("5. Retour au menu du tournoi")
         self.console.print("=================================", style="deep_sky_blue1")
 
     def request_user_choice(self) -> int:
@@ -29,16 +30,16 @@ class RoundView:
             choice_number (int): The number of the chosen option
         """
         while True:
-            choice = self.console.input("Veuillez entrer un choix [thistle3][1/2/3/4]: ")
+            choice = self.console.input("Veuillez entrer un choix [thistle3][1/2/3/4/5]: ")
             print()
             try:
                 choice_number: int = int(choice)
-                if choice_number in [1, 2, 3, 4]:
+                if choice_number in [1, 2, 3, 4, 5]:
                     return choice_number
                 else:
-                    alert_message("Veuillez entrer un valide [1/2/3/4]", "red")
+                    alert_message("Veuillez entrer un valide [1/2/3/4/5]", "red")
             except ValueError:
-                alert_message("Veuillez entrer un nombre [1/2/3/4]", "red")
+                alert_message("Veuillez entrer un nombre [1/2/3/4/5]", "red")
 
     def display_matches(self, matches):
         """Displays the list of matches for the current round."""
@@ -86,3 +87,17 @@ class RoundView:
                     alert_message("Veuillez entrer un choix valide [1/2/3]", "red")
             except ValueError:
                 alert_message("Veuillez entrer un nombre [1/2/3]", "red")
+
+    def display_rankings(self, players):
+        """Displays the ranking of players based on their points."""
+
+        table = Table(title="=== Classement joueurs ===", show_lines=True)
+        table.add_column("Rang", justify="right", style="cyan", no_wrap=True)
+        table.add_column("Prénom", style="magenta")
+        table.add_column("Nom", style="magenta")
+        table.add_column("Points", justify="right", style="green")
+
+        for rank, player in enumerate(players, start=1):
+            table.add_row(str(rank), player.firstname, player.lastname, str(player.point))
+
+        self.console.print(table)

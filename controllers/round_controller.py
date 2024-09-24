@@ -11,27 +11,27 @@ from rich.console import Console
 
 class RoundController:
     """
-        Controller class responsible for managing rounds within a tournament.
+    Controller class responsible for managing rounds within a tournament.
 
-        This class handles the creation and management of rounds, including starting rounds,
-        displaying match details, entering match results, and updating player scores.
+    This class handles the creation and management of rounds, including starting rounds,
+    displaying match details, entering match results, and updating player scores.
 
-        Attributes:
-        ----------
-        round_view : RoundView
-            The view responsible for displaying round-related information and menus.
-        round_manager : RoundManager
-            The manager responsible for handling round data and operations.
-        tournament_manager : TournamentManager
-            The manager responsible for handling tournament data and operations.
-        tournament_view : TournamentView
-            The view responsible for displaying tournament-related information.
-        player_manager : PlayerManager
-            The manager responsible for handling player data and operations.
-        main_menu_view : MainMenuView
-            The view responsible for displaying the main menu.
-        console : Console
-            A Rich Console object for displaying styled output in the terminal.
+    Attributes:
+    ----------
+    round_view : RoundView
+        The view responsible for displaying round-related information and menus.
+    round_manager : RoundManager
+        The manager responsible for handling round data and operations.
+    tournament_manager : TournamentManager
+        The manager responsible for handling tournament data and operations.
+    tournament_view : TournamentView
+        The view responsible for displaying tournament-related information.
+    player_manager : PlayerManager
+        The manager responsible for handling player data and operations.
+    main_menu_view : MainMenuView
+        The view responsible for displaying the main menu.
+    console : Console
+        A Rich Console object for displaying styled output in the terminal.
     """
 
     def __init__(self):
@@ -45,16 +45,10 @@ class RoundController:
 
     def run(self, tournament_id):
         current_tournament = self.tournament_manager.get_tournament_by_id(tournament_id)
-        current_round_number = current_tournament["number_of_current_round"] + 1
-
-        alert_message(
-            f"Tournoi {current_tournament["name"]} du {current_tournament["date_start"]} "
-            f"au {current_tournament["date_end"]}",
-            "deep_sky_blue1",
-        )
+        self.tournament_view.display_tournament_info(current_tournament)
 
         while True:
-            self.round_view.display_round_menu(current_round_number)
+            self.round_view.display_round_menu()
             choice: int = self.round_view.request_user_choice()
 
             match choice:
@@ -65,6 +59,8 @@ class RoundController:
                 case 3:
                     self.enter_scores(tournament_id)
                 case 4:
+                    self.display_rankings(tournament_id)
+                case 5:
                     break
 
     def start_round(self, tournament_id):
@@ -75,7 +71,7 @@ class RoundController:
         """
         if self.tournament_manager.is_tournament_finished(tournament_id):
             alert_message("Tournoi terminé !", "deep_sky_blue1")
-            self.tournament_manager.display_final_rankings(tournament_id)
+            self.display_rankings(tournament_id)
             return
 
         players = self.round_manager.get_players_tournament(tournament_id)
@@ -109,3 +105,17 @@ class RoundController:
                 choices.append(choice)
             self.round_manager.enter_scores(tournament_id, choices)
             self.round_manager.update_player_scores(tournament_id)
+
+        if self.tournament_manager.is_tournament_finished(tournament_id):
+            alert_message("Tournoi terminé !", "deep_sky_blue1")
+            self.display_rankings(tournament_id)
+            return
+
+    def display_rankings(self, tournament_id):
+        """Displays the ranking of players based on their points."""
+        players = self.tournament_manager.get_registered_players(tournament_id)
+        if not players:
+            alert_message("Aucun joueur enregistré pour ce tournoi", "red")
+            return
+        players.sort(key=lambda player: player.point, reverse=True)
+        self.round_view.display_rankings(players)
